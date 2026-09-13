@@ -1,0 +1,644 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MessMitra | Your Mess, Minus the Mess</title>
+<link rel="icon" type="image/jpeg" href="mess_mitra_logo.jpeg">
+<!-- Google Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<!-- External Libraries -->
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://unpkg.com/lucide@latest"></script>
+
+<script>
+    tailwind.config = {
+        theme: {
+            extend: {
+                colors: {
+                    emerald: { 50: '#ecfdf5', 500: '#10b981', 600: '#059669', 700: '#047857' },
+                    amber: { 500: '#f59e0b', 600: '#d97706' },
+                    slate: { 50: '#f8fafc', 900: '#0f172a' }
+                },
+                fontFamily: {
+                    heading: ['Outfit', 'sans-serif'],
+                    sans: ['Plus Jakarta Sans', 'sans-serif'],
+                }
+            }
+        }
+    }
+</script>
+
+<style>
+    .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+    .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+    .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+    .glass-card { background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.2); }
+    .view-transition { transition: all 0.3s ease-in-out; }
+    #map { z-index: 1; }
+    .marker-pulse {
+        background: #10b981;
+        border-radius: 50%;
+        box-shadow: 0 0 0 rgba(16, 185, 129, 0.4);
+        animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+        0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
+        70% { box-shadow: 0 0 0 10px rgba(16, 185, 129, 0); }
+        100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+    }
+</style>
+</head>
+<body class="bg-slate-50 text-slate-900 font-sans leading-relaxed">
+<!-- Navigation -->
+<nav class="sticky top-0 z-50 w-full bg-white/80 backdrop-blur-md border-b border-slate-200">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between items-center h-16">
+            <div class="flex items-center gap-3 cursor-pointer" onclick="navigateTo('home')">
+                <img src="mess_mitra_logo.jpeg" alt="MessMitra Logo" class="h-10 w-auto object-contain rounded-xl shadow-sm">
+                <div>
+                    <span class="text-xl font-heading font-extrabold tracking-tight text-emerald-700">MessMitra</span>
+                    <span class="hidden sm:inline-block ml-2 px-2 py-0.5 bg-emerald-100 text-emerald-700 text-[10px] font-bold rounded-full uppercase">PICT Pune</span>
+                </div>
+            </div>
+            <div class="hidden md:flex items-center space-x-8">
+                <button onclick="navigateTo('home')" class="text-sm font-semibold hover:text-emerald-600 transition">Explore</button>
+                <button onclick="navigateTo('about')" class="text-sm font-semibold hover:text-emerald-600 transition">About Us</button>
+                <a href="mailto:messmitrasupport@gmail.com?subject=MessMitra%20Feedback" class="px-4 py-2 bg-slate-900 text-white text-sm font-bold rounded-full hover:bg-slate-800 transition">Report Bug</a>
+            </div>
+            <button class="md:hidden text-slate-900" id="mobile-menu-btn">
+                <i data-lucide="menu"></i>
+            </button>
+        </div>
+    </div>
+</nav>
+
+<!-- Views Container -->
+<main id="app-content">
+    
+    <!-- HOME VIEW -->
+    <section id="view-home" class="view-transition">
+        <!-- Hero -->
+        <div class="relative bg-emerald-700 pt-16 pb-24 overflow-hidden">
+            <div class="absolute inset-0 opacity-10">
+                <img src="https://www.transparenttextures.com/patterns/cubes.png" class="w-full h-full object-repeat">
+            </div>
+            <div class="relative max-w-7xl mx-auto px-4 text-center">
+                <h1 class="text-4xl md:text-6xl font-heading font-extrabold text-white mb-4">
+                    Your Mess, Minus the Mess
+                </h1>
+                <p class="text-emerald-100 text-lg md:text-xl mb-8 max-w-2xl mx-auto font-medium">
+                    EXPLORE • COMPARE • EAT • BELONG
+                </p>
+                <div class="max-w-2xl mx-auto relative">
+                    <i data-lucide="search" class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"></i>
+                    <input type="text" id="search-input" placeholder="Search by mess name, cuisine, or specialty..." 
+                           class="w-full pl-12 pr-4 py-4 rounded-2xl shadow-2xl border-none focus:ring-4 focus:ring-emerald-500/20 text-slate-900 text-lg">
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content Container -->
+        <div class="max-w-7xl mx-auto px-4 -mt-12 space-y-8 pb-20">
+            
+            <!-- Map Section -->
+            <div class="bg-white rounded-[2.5rem] p-3 shadow-xl overflow-hidden">
+                <div id="map" class="h-[380px] w-full rounded-[1.25rem]"></div>
+            </div>
+
+            <!-- Filters -->
+            <div class="flex flex-wrap items-center gap-3 bg-white p-4 rounded-2xl shadow-sm border border-slate-200">
+                <button onclick="filterMesses('all')" class="filter-btn active px-5 py-2 rounded-full text-sm font-bold border transition">All</button>
+                <button onclick="filterMesses('Veg')" class="filter-btn px-5 py-2 rounded-full text-sm font-bold border transition">Pure Veg 🌱</button>
+                <button onclick="filterMesses('Sunday')" class="filter-btn px-5 py-2 rounded-full text-sm font-bold border bg-amber-50 text-amber-700 border-amber-200 transition">Sunday Night Open 🌙</button>
+                <button onclick="filterMesses('Kokani')" class="filter-btn px-5 py-2 rounded-full text-sm font-bold border transition">Kokani Coastal 🐟</button>
+                <button onclick="filterMesses('North Indian')" class="filter-btn px-5 py-2 rounded-full text-sm font-bold border transition">North Indian 🥘</button>
+                
+                <div class="ml-auto flex items-center gap-4 min-w-[200px]">
+                    <span class="text-xs font-bold text-slate-500 uppercase">Max ₹<span id="price-val">100</span></span>
+                    <input type="range" id="price-range" min="60" max="100" value="100" class="flex-1 accent-emerald-600">
+                </div>
+            </div>
+
+            <!-- Grid -->
+            <div id="mess-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Cards injected here -->
+            </div>
+        </div>
+    </section>
+
+    <!-- DETAIL VIEW -->
+    <section id="view-detail" class="hidden view-transition pb-20">
+        <div id="detail-content">
+            <!-- Injected via JS -->
+        </div>
+    </section>
+
+    <!-- ABOUT VIEW -->
+    <section id="view-about" class="hidden view-transition py-16">
+        <div class="max-w-4xl mx-auto px-4">
+            <div class="bg-white rounded-[2.5rem] shadow-xl overflow-hidden p-8 md:p-12">
+                <div class="flex items-center gap-4 mb-8">
+                    <img src="mess_mitra_logo.jpeg" class="h-16 rounded-2xl shadow-md">
+                    <div>
+                        <h2 class="text-3xl font-heading font-extrabold">About MessMitra</h2>
+                        <p class="text-slate-500 font-medium">Community Engagement Project (CEP)</p>
+                    </div>
+                </div>
+
+                <div class="prose prose-slate max-w-none space-y-6 text-slate-600">
+                    <div class="bg-emerald-50 border-l-4 border-emerald-500 p-6 rounded-r-2xl">
+                        <h3 class="text-emerald-800 font-bold mb-2">Academic Context</h3>
+                        <p class="text-sm">Course Code: 2603CE31 | Semester III, AY 2026–27<br>
+                        Department of Electronics & Telecommunication Engineering<br>
+                        SCTR's Pune Institute of Computer Technology (PICT), Pune – 411043</p>
+                    </div>
+
+                    <div class="space-y-4">
+                        <h3 class="text-xl font-bold text-slate-900">The Problem Statement</h3>
+                        <p>Transitioning to college life involves a major shift in dining habits. New students (FE & DSY) often face hidden costs, hygiene concerns, and the dreaded "Sunday Night Hunger" when most messes close. MessMitra provides transparency through on-ground audited data.</p>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 pt-8">
+                        <div class="p-6 bg-slate-50 rounded-2xl border border-slate-200">
+                            <h4 class="font-bold text-slate-900 mb-2">Sustainable Goals</h4>
+                            <p class="text-sm">Aligned with UN SDG 3 (Good Health & Well-being) and SDG 11 (Sustainable Cities & Communities).</p>
+                        </div>
+                        <div class="p-6 bg-slate-50 rounded-2xl border border-slate-200">
+                            <h4 class="font-bold text-slate-900 mb-2">Field Methodology</h4>
+                            <p class="text-sm">14 private messes audited physically on Aug 12 & Aug 19, 2026. Verified pricing, water hygiene, and seating.</p>
+                        </div>
+                    </div>
+
+                    <h3 class="text-xl font-bold text-slate-900 pt-8">Development Team</h3>
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
+                        <div class="text-center">
+                            <div class="w-20 h-20 bg-emerald-100 rounded-full mx-auto mb-3 flex items-center justify-center text-emerald-700 font-bold text-xl">MJ</div>
+                            <h5 class="font-bold">Malhar Joshi</h5>
+                            <p class="text-xs text-slate-500">Team Lead & Data Architecture</p>
+                        </div>
+                        <div class="text-center">
+                            <div class="w-20 h-20 bg-amber-100 rounded-full mx-auto mb-3 flex items-center justify-center text-amber-700 font-bold text-xl">PW</div>
+                            <h5 class="font-bold">Pawan</h5>
+                            <p class="text-xs text-slate-500">Field Ops & UI Design</p>
+                        </div>
+                        <div class="text-center">
+                            <div class="w-20 h-20 bg-blue-100 rounded-full mx-auto mb-3 flex items-center justify-center text-blue-700 font-bold text-xl">PT</div>
+                            <h5 class="font-bold">Parth</h5>
+                            <p class="text-xs text-slate-500">Field Ops & Logic Testing</p>
+                        </div>
+                    </div>
+
+                    <div class="bg-slate-900 text-white p-8 rounded-[2rem] mt-12 text-center">
+                        <h3 class="text-xl font-bold mb-4">Have a suggestion or found a bug?</h3>
+                        <p class="text-slate-400 mb-6">Contact us to list a new mess or report incorrect pricing.</p>
+                        <a href="mailto:messmitrasupport@gmail.com" class="inline-block px-8 py-3 bg-emerald-500 hover:bg-emerald-600 rounded-full font-bold transition">
+                            messmitrasupport@gmail.com
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+
+<script>
+    const messesData = [
+        { id: 1, name: "Kirteshwar Khanawal", category: "Daily Mess", owner: "Mrs. Pratibha Bapurao Tekale", contact: "+917888227358", address: "Near PICT Back Gate, Dhankawadi, Pune", distanceMeters: 250, lat: 18.4586, lng: 73.8512, foodType: "Veg & Non-Veg", cuisineCategory: "Maharashtrian", specialtyTags: ["Daily Fresh Meals", "Chicken Thali", "Sunday Night Open"], pricing: { dailyPlate: 80, dailyNonVeg: 150, monthlyPass1x: 2000, monthlyPass2x: 4000, sundayFeast: 80, delivery: "Included" }, timings: { lunch: "11:30 AM - 03:30 PM", dinner: "07:00 PM - 11:00 PM" }, sundayNightOpen: true, hygieneRating: 4.3, waterFacility: "Normal Filter Jar", seatingCapacity: 20, ownerSpecialty: "Authentic Maharashtrian Chicken Thali (₹150)", studentHighlights: ["Open on Sunday Nights!", "Free room delivery included", "Ghar-jaisa light Maharashtrian taste"], servingRule: "Unlimited Roti/Bhakri & Gravy", facilities: ["Clean Seating Area", "Handwash Basin", "Daily Disinfection"], images: ["https://images.unsplash.com/photo-1613292443284-8d10ef9383fe?w=800&auto=format&fit=crop&q=80"] },
+        { id: 2, name: "Deep's Kitchen", category: "Daily Mess & Tiffin", owner: "Mrs. Deepali Kishor Pawar", contact: "+919923886667", address: "Dhankawadi, near PICT, Pune", distanceMeters: 250, lat: 18.4589, lng: 73.8518, foodType: "Veg & Non-Veg", cuisineCategory: "Maharashtrian", specialtyTags: ["Homestyle Cooking", "3x Non-Veg Schedule", "Low Acidity"], pricing: { dailyPlate: 80, dailyNonVeg: 120, monthlyPass1x: 2200, monthlyPass2x: 4200, sundayFeast: 80, delivery: "Available" }, timings: { lunch: "12:00 PM - 03:30 PM", dinner: "07:00 PM - 10:30 PM" }, sundayNightOpen: false, hygieneRating: 4.5, waterFacility: "Normal Filter Jar", seatingCapacity: 30, ownerSpecialty: "3-Times Weekly Non-Veg Feast (Wed, Fri, Sun)", studentHighlights: ["Hot and soft tawa phulkas", "Zero acidity cooking", "Clean and peaceful seating"], servingRule: "Unlimited Dal-Bhat & Sabzi", facilities: ["Handwash Basin", "Clean Dining Space"], images: ["https://images.unsplash.com/photo-1546833999-b9f581a1996d?w=800&auto=format&fit=crop&q=80"] },
+        { id: 3, name: "Aai Mess", category: "Daily Mess", owner: "Mrs. Ambika Muttepwar", contact: "+919156823051", address: "Dhankawadi, 3 mins from PICT Gate", distanceMeters: 250, lat: 18.4578, lng: 73.8524, foodType: "Pure Veg", cuisineCategory: "Maharashtrian", specialtyTags: ["100% Pure Veg", "Motherly Taste", "Sunday Special"], pricing: { dailyPlate: 80, monthlyPass1x: 2000, monthlyPass2x: 3400, sundayFeast: 90, delivery: "Available" }, timings: { lunch: "12:00 PM - 03:00 PM", dinner: "08:00 PM - 10:30 PM" }, sundayNightOpen: false, hygieneRating: 4.6, waterFacility: "Normal Filter Jar", seatingCapacity: 40, ownerSpecialty: "100% Pure Veg Home Style Meal", studentHighlights: ["Hot chapatis served directly from tawa", "Homely Dal Tadka", "Spacious 40-seat dining hall"], servingRule: "Unlimited Veg Thali", facilities: ["Handwash Sink", "Large Hall"], images: ["https://images.unsplash.com/photo-1626777552726-4a6b54c97e46?w=800&auto=format&fit=crop&q=80"] },
+        { id: 4, name: "Kashi Vishweshwar Mess", category: "Daily Mess", owner: "Mr. Anil Anantrao Sarvade", contact: "+918421844492", address: "Near PICT Gate, Dhankawadi, Pune", distanceMeters: 250, lat: 18.4568, lng: 73.8519, foodType: "Veg & Non-Veg", cuisineCategory: "Maharashtrian", specialtyTags: ["Friday Egg Curry", "Budget Pass", "Sunday Non-Veg"], pricing: { dailyPlate: 80, dailyEgg: 90, dailyNonVeg: 100, monthlyPass1x: 2000, monthlyPass2x: 3000, sundayFeast: 100, delivery: "+₹10" }, timings: { lunch: "12:00 PM - 03:00 PM", dinner: "08:00 PM - 10:30 PM" }, sundayNightOpen: false, hygieneRating: 4.2, waterFacility: "Normal Filter Jar", seatingCapacity: 20, ownerSpecialty: "Friday Special Egg Night (₹90)", studentHighlights: ["Most affordable monthly pass", "Rich Egg Curry", "Fast service"], servingRule: "Standard Thali + Unlimited Gravy", facilities: ["Handwash Area"], images: ["https://images.unsplash.com/photo-1546833999-b9f581a1996d?w=800&auto=format&fit=crop&q=80"] },
+        { id: 5, name: "Hotel Abhiruchi", category: "Local Restaurant & Mess", owner: "Mrs. Sharda Sanjay Pawar", contact: "+919822547693", address: "Main Road, Dhankawadi (500m from PICT)", distanceMeters: 500, lat: 18.4552, lng: 73.8488, foodType: "Veg & Non-Veg", cuisineCategory: "Multi-Cuisine", specialtyTags: ["15+ Years Exp", "Open Sunday Night", "Kolhapuri Special"], pricing: { dailyPlate: 90, dailyNonVeg: 140, monthlyPass1x: 2200, monthlyPass2x: 4000, sundayFeast: 90, delivery: "Available" }, timings: { lunch: "12:00 PM - 03:30 PM", dinner: "08:00 PM - 11:00 PM" }, sundayNightOpen: true, hygieneRating: 4.4, waterFacility: "Normal Filter Jar", seatingCapacity: 25, ownerSpecialty: "15 Years Experience, Full Sunday Night Operations", studentHighlights: ["Sunday night dinner lifesaver", "Spicy Kolhapuri options", "Open late till 11 PM"], servingRule: "Unlimited Thali option available", facilities: ["Clean Setup"], images: ["https://images.unsplash.com/photo-1613292443284-8d10ef9383fe?w=800&auto=format&fit=crop&q=80"] },
+        { id: 6, name: "Jay Shankar Mess", category: "Daily Mess", owner: "Mrs. Survashe Poonam", contact: "+919623045151", address: "Near Katraj-Dhankawadi Link Road, Pune", distanceMeters: 300, lat: 18.4562, lng: 73.8532, foodType: "Veg & Non-Veg", cuisineCategory: "Maharashtrian", specialtyTags: ["Daily Gulab Jamun", "Jowar Bhakri", "Spicy Thecha"], pricing: { dailyPlate: 80, monthlyPass1x: 1800, monthlyPass2x: 3500, sundayFeast: 80 }, timings: { lunch: "09:00 AM - 03:00 PM", dinner: "07:00 PM - 10:00 PM" }, sundayNightOpen: false, hygieneRating: 4.5, waterFacility: "Normal Filter Jar", seatingCapacity: 45, ownerSpecialty: "Daily Sweet (Gulab Jamun), Warm Jowar Bhakri", studentHighlights: ["Daily Gulab Jamun included", "Authentic spicy thecha", "Opens early at 9:00 AM"], servingRule: "Limited Plate: 3 Chapati/Bhakri + Unlimited Dal Rice", facilities: ["Large 45+ Seating Hall"], images: ["https://images.unsplash.com/photo-1626777552726-4a6b54c97e46?w=800&auto=format&fit=crop&q=80"] },
+        { id: 7, name: "SK Dining (Santosh Mess)", category: "Daily Mess", owner: "Mr. Santosh Kumar Mishra", contact: "+919403098405", address: "Dhankawadi, near PICT Back Gate", distanceMeters: 260, lat: 18.4591, lng: 73.8504, foodType: "Pure Veg", cuisineCategory: "North Indian", specialtyTags: ["Desi Ghee Phulke", "Dal Makhani", "North Indian Specialist"], pricing: { dailyPlate: 90, monthlyPass1x: 2400, monthlyPass2x: 4200, sundayFeast: 100, delivery: "+₹20" }, timings: { lunch: "12:00 PM - 02:00 PM", dinner: "08:00 PM - 09:45 PM" }, sundayNightOpen: false, hygieneRating: 4.7, waterFacility: "Normal Filter Jar", seatingCapacity: 40, ownerSpecialty: "North Indian Desi Ghee Phulke, Paneer Specialist", studentHighlights: ["Top pick for North Indian freshers", "100% Pure Desi Ghee phulkas", "Spotless kitchen"], servingRule: "Unlimited North Indian Meals", facilities: ["Clean Hall"], images: ["https://images.unsplash.com/photo-1589301760014-d929f3979dbc?w=800&auto=format&fit=crop&q=80"] },
+        { id: 8, name: "Sadguru Mess", category: "Daily Mess", owner: "Mr. Amit Shukla", contact: "+919404073499", address: "Dhankawadi, Near PICT, Pune", distanceMeters: 250, lat: 18.4572, lng: 73.8529, foodType: "Pure Veg", cuisineCategory: "North Indian", specialtyTags: ["RO Drinking Water", "Open Sunday Night", "Late Night (11:30 PM)"], pricing: { dailyPlate: 80, monthlyPass1x: 2200, monthlyPass2x: 4400, sundayFeast: 100, delivery: "Available" }, timings: { lunch: "11:00 AM - 03:30 PM", dinner: "06:30 PM - 11:30 PM" }, sundayNightOpen: true, hygieneRating: 4.6, waterFacility: "Certified RO Water Filter System", seatingCapacity: 16, ownerSpecialty: "Certified On-Site RO Drinking Water", studentHighlights: ["Open on Sunday nights", "Dinner available till 11:30 PM for exams", "Certified RO Water"], servingRule: "Unlimited Dal, Rice & Sabzi", facilities: ["On-Site RO Filter Unit"], images: ["https://images.unsplash.com/photo-1546833999-b9f581a1996d?w=800&auto=format&fit=crop&q=80"] },
+        { id: 9, name: "Sujata Mess", category: "Daily Mess", owner: "Mr. Nitin Yadav", contact: "+919850001686", address: "Dhankawadi, near PICT, Pune", distanceMeters: 250, lat: 18.4580, lng: 73.8495, foodType: "Veg & Non-Veg", cuisineCategory: "Maharashtrian", specialtyTags: ["Wed & Sun Non-Veg", "Sweet Feast", "Budget Pass"], pricing: { dailyPlate: 100, monthlyPass1x: 2000, monthlyPass2x: 3500, sundayFeast: 130, delivery: "Available" }, timings: { lunch: "12:00 PM - 03:00 PM", dinner: "07:00 PM - 11:00 PM" }, sundayNightOpen: false, hygieneRating: 4.3, waterFacility: "Normal Filter Jar", seatingCapacity: 20, ownerSpecialty: "Two-Times Weekly Non-Veg Gravy & Sweets", studentHighlights: ["Rich Non-veg gravy on Wednesdays", "Economical 2-time monthly pass", "Dinner open till 11:00 PM"], servingRule: "Unlimited Veg, Fixed Non-Veg", facilities: ["Clean Tables"], images: ["https://images.unsplash.com/photo-1613292443284-8d10ef9383fe?w=800&auto=format&fit=crop&q=80"] },
+        { id: 10, name: "Hotel Maitri Katta", category: "Local Restaurant & Mess", owner: "Mr. Niraj Tyagi", contact: "+917558742925", address: "Dhankawadi Main Road (500m from PICT)", distanceMeters: 500, lat: 18.4548, lng: 73.8520, foodType: "Veg & Non-Veg", cuisineCategory: "Multi-Cuisine", specialtyTags: ["Free 2km Delivery", "Sunday Paneer Thali", "Restaurant Style"], pricing: { dailyPlate: 90, monthlyPass1x: 2000, monthlyPass2x: 3600, sundayFeast: 90, delivery: "Free (2km)" }, timings: { lunch: "11:30 AM - 03:30 PM", dinner: "07:00 PM - 10:30 PM" }, sundayNightOpen: false, hygieneRating: 4.4, waterFacility: "Normal Filter Jar", seatingCapacity: 32, ownerSpecialty: "Sunday Special Paneer (included in standard rate)", studentHighlights: ["Free room delivery up to 2 km", "Sunday Paneer Thali hit", "Closed 2nd/4th Monday"], servingRule: "Complete Multi-Cuisine Thali", facilities: ["32-Seat Seating"], images: ["https://images.unsplash.com/photo-1626777552726-4a6b54c97e46?w=800&auto=format&fit=crop&q=80"] },
+        { id: 11, name: "Kokan Katta", category: "Daily Mess & Eatery", owner: "Mr. Ganesh Ghadegaon", contact: "+918983106179", address: "Dhankawadi, 4 mins walk from PICT Gate", distanceMeters: 300, lat: 18.4565, lng: 73.8540, foodType: "Veg & Non-Veg", cuisineCategory: "Kokani Coastal", specialtyTags: ["Kokani Masala", "Solkadhi", "₹100 Sunday Non-Veg"], pricing: { dailyPlate: 100, monthlyPass1x: 2000, monthlyPass2x: 3500, sundayFeast: 100, delivery: "Available" }, timings: { lunch: "12:00 PM - 03:00 PM", dinner: "07:30 PM - 11:00 PM" }, sundayNightOpen: false, hygieneRating: 4.4, waterFacility: "Normal Filter Jar", seatingCapacity: 20, ownerSpecialty: "Authentic Kokani Spices, Fresh Solkadhi", studentHighlights: ["Rare authentic Coastal Kokani food", "Sunday Non-Veg thali at just ₹100", "Homely staff"], servingRule: "Unlimited Rice & Kokani Curry", facilities: ["Handwash Station"], images: ["https://images.unsplash.com/photo-1546833999-b9f581a1996d?w=800&auto=format&fit=crop&q=80"] },
+        { id: 12, name: "Shankar Maharaj Mess", category: "Daily Mess", owner: "Mrs. Swati Dighe", contact: "+917499186937", address: "Dhankawadi (350m from PICT Gate)", distanceMeters: 350, lat: 18.4558, lng: 73.8510, foodType: "Veg & Non-Veg", cuisineCategory: "Maharashtrian", specialtyTags: ["Saturday Aloo Parathas", "Menu Rotation", "Hostel Tiffin"], pricing: { dailyPlate: 100, dailyEgg: 120, dailyNonVeg: 150, monthlyPass1x: 2200, monthlyPass2x: 4000, sundayFeast: 160, delivery: "Available" }, timings: { lunch: "12:00 PM - 03:00 PM", dinner: "07:15 PM - 11:00 PM" }, sundayNightOpen: false, hygieneRating: 4.5, waterFacility: "Normal Filter Jar", seatingCapacity: 25, ownerSpecialty: "Fortnightly Menu Rotation, Hot Saturday Parathas", studentHighlights: ["Saturday hot parathas are famous", "High nutritional balance", "Tiffin delivery available"], servingRule: "Unlimited Veg Thali", facilities: ["Clean Floor"], images: ["https://images.unsplash.com/photo-1589301760014-d929f3979dbc?w=800&auto=format&fit=crop&q=80"] },
+        { id: 13, name: "Annapurna Snacks & Dining", category: "Daily Mess & Snacks", owner: "Mrs. Shushma Kosumbkar", contact: "+917385749224", address: "Near Katraj Chowk (850m from PICT)", distanceMeters: 850, lat: 18.4520, lng: 73.8550, foodType: "Veg & Non-Veg", cuisineCategory: "Multi-Cuisine", specialtyTags: ["Mess + Snacks", "South Indian Breakfast", "Budget Pass"], pricing: { dailyPlate: 90, dailyNonVeg: 130, monthlyPass1x: 1900, monthlyPass2x: 3600, sundayFeast: 100, delivery: "Same rate" }, timings: { lunch: "11:00 AM - 03:00 PM", dinner: "06:30 PM - 10:00 PM" }, sundayNightOpen: false, hygieneRating: 4.5, waterFacility: "Normal Filter Jar", seatingCapacity: 40, ownerSpecialty: "3-Day Non-Veg (Wed, Fri, Sun), South Indian Snacks", studentHighlights: ["Snacks + Mess in one place", "Spacious 40+ seating hall", "Budget monthly pass at ₹1,900"], servingRule: "Unlimited Veg Thali", facilities: ["Large Hall"], images: ["https://images.unsplash.com/photo-1613292443284-8d10ef9383fe?w=800&auto=format&fit=crop&q=80"] },
+        { id: 14, name: "Madhura Mess", category: "Daily Mess", owner: "Mr. Pratik Anpat", contact: "+919765606448", address: "170m from PICT Main Gate", distanceMeters: 170, lat: 18.4580, lng: 73.8510, foodType: "Veg & Non-Veg", cuisineCategory: "Maharashtrian", specialtyTags: ["Closest to PICT (170m)", "Cheapest 2-Time Pass", "Daily Sweets"], pricing: { dailyPlate: 90, monthlyPass1x: 1800, monthlyPass2x: 3200, sundayFeast: 120, delivery: "Included" }, timings: { lunch: "12:00 PM - 03:30 PM", dinner: "07:00 PM - 10:30 PM" }, sundayNightOpen: false, hygieneRating: 4.6, waterFacility: "Normal Filter Jar", seatingCapacity: 20, ownerSpecialty: "Closest Mess to PICT (2 min walk)", studentHighlights: ["Lowest monthly 2-time pass (₹3,200)", "Daily Veg Sweets", "Friendly staff"], servingRule: "Unlimited Phulkas & Sabzi", facilities: ["Clean Setup"], images: ["https://images.unsplash.com/photo-1626777552726-4a6b54c97e46?w=800&auto=format&fit=crop&q=80"] },
+        { id: 15, name: "PICT Campus Canteen", category: "Campus Canteen", owner: "Campus Vendor", contact: "Intercom", address: "Inside PICT Campus Ground Floor", distanceMeters: 0, lat: 18.4575, lng: 73.8508, foodType: "Pure Veg", cuisineCategory: "Multi-Cuisine", specialtyTags: ["Zero Walking Distance", "Cheapest Daily Meal (₹60)", "Central RO Plant"], pricing: { dailyPlate: 60, monthlyPass1x: 1200, monthlyPass2x: 2400, sundayFeast: 80, delivery: "Campus Only" }, timings: { lunch: "12:00 PM - 03:00 PM", dinner: "Closed" }, sundayNightOpen: false, hygieneRating: 4.2, waterFacility: "Central College RO Water Plant", seatingCapacity: 120, ownerSpecialty: "Cheapest Meal in Dhankawadi", studentHighlights: ["Zero walking needed", "Safe campus dining", "Large Seating"], servingRule: "Standard Thali Plate", facilities: ["120+ Large Seating Area", "Central RO"], images: ["https://images.unsplash.com/photo-1546833999-b9f581a1996d?w=800&auto=format&fit=crop&q=80"] }
+    ];
+
+    let map, markers = [];
+
+    // App Initialization
+    window.onload = () => {
+        lucide.createIcons();
+        initMap();
+        renderMesses(messesData);
+        setupEventListeners();
+        handleRouting();
+    };
+
+    // Routing Logic
+    window.onhashchange = handleRouting;
+
+    function handleRouting() {
+        const hash = window.location.hash || '#home';
+        const [view, id] = hash.split('/');
+        
+        document.querySelectorAll('section').forEach(s => s.classList.add('hidden'));
+
+        if (view === '#mess' && id) {
+            const mess = messesData.find(m => m.id == id);
+            if (mess) {
+                renderDetailView(mess);
+                document.getElementById('view-detail').classList.remove('hidden');
+            }
+        } else if (view === '#about') {
+            document.getElementById('view-about').classList.remove('hidden');
+        } else {
+            document.getElementById('view-home').classList.remove('hidden');
+            if (map) map.invalidateSize();
+        }
+        window.scrollTo(0, 0);
+    }
+
+    function navigateTo(target, id = null) {
+        window.location.hash = id ? `${target}/${id}` : target;
+    }
+
+    // Map Logic
+    function initMap() {
+        map = L.map('map', { scrollWheelZoom: false }).setView([18.4575, 73.8508], 16);
+        L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; OpenStreetMap'
+        }).addTo(map);
+
+        // PICT Main Gate Marker
+        L.marker([18.4575, 73.8508], {
+            icon: L.divIcon({
+                className: 'bg-slate-900 w-4 h-4 rounded-full border-2 border-white ring-4 ring-slate-900/20 shadow-lg',
+                iconSize: [16, 16]
+            })
+        }).addTo(map).bindPopup('<div class="font-bold">PICT Main Gate</div>');
+
+        renderMarkers(messesData);
+    }
+
+    function renderMarkers(data) {
+        markers.forEach(m => map.removeLayer(m));
+        markers = [];
+
+        data.forEach(mess => {
+            const isSunday = mess.sundayNightOpen;
+            const marker = L.marker([mess.lat, mess.lng], {
+                icon: L.divIcon({
+                    className: `w-6 h-6 rounded-full border-2 border-white shadow-lg ${isSunday ? 'bg-amber-500 marker-pulse' : 'bg-emerald-600'}`,
+                    iconSize: [24, 24]
+                })
+            }).addTo(map).bindPopup(`
+                <div class="p-2 space-y-1">
+                    <div class="font-bold text-slate-900">${mess.name}</div>
+                    <div class="text-xs text-slate-500">₹${mess.pricing.dailyPlate} | ${mess.distanceMeters}m</div>
+                    <button onclick="navigateTo('mess', ${mess.id})" class="mt-2 w-full px-3 py-1 bg-emerald-600 text-white text-[10px] font-bold rounded-lg uppercase tracking-wider">Open Profile</button>
+                </div>
+            `);
+            markers.push(marker);
+        });
+    }
+
+    // Search & Filter Logic
+    function setupEventListeners() {
+        document.getElementById('search-input').addEventListener('input', (e) => {
+            const query = e.target.value.toLowerCase();
+            const filtered = messesData.filter(m => 
+                m.name.toLowerCase().includes(query) || 
+                m.cuisineCategory.toLowerCase().includes(query) ||
+                m.specialtyTags.some(t => t.toLowerCase().includes(query))
+            );
+            renderMesses(filtered);
+        });
+
+        document.getElementById('price-range').addEventListener('input', (e) => {
+            const price = e.target.value;
+            document.getElementById('price-val').innerText = price;
+            const filtered = messesData.filter(m => m.pricing.dailyPlate <= price);
+            renderMesses(filtered);
+        });
+    }
+
+    function filterMesses(type) {
+        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('bg-emerald-600', 'text-white', 'active'));
+        event.target.classList.add('bg-emerald-600', 'text-white', 'active');
+
+        let filtered = messesData;
+        if (type === 'Veg') filtered = messesData.filter(m => m.foodType === 'Pure Veg');
+        if (type === 'Sunday') filtered = messesData.filter(m => m.sundayNightOpen);
+        if (type === 'Kokani') filtered = messesData.filter(m => m.cuisineCategory.includes('Kokan'));
+        if (type === 'North Indian') filtered = messesData.filter(m => m.cuisineCategory.includes('North'));
+
+        renderMesses(filtered);
+        renderMarkers(filtered);
+    }
+
+    // Rendering Components
+    function renderMesses(data) {
+        const grid = document.getElementById('mess-grid');
+        grid.innerHTML = data.map(mess => `
+            <div class="group bg-white rounded-3xl overflow-hidden shadow-sm hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 border border-slate-200">
+                <div class="relative h-48 overflow-hidden">
+                    <img src="${mess.images[0]}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute top-4 left-4 flex gap-2">
+                        ${mess.sundayNightOpen ? '<span class="bg-amber-500 text-white text-[10px] font-black px-3 py-1 rounded-full uppercase shadow-lg">Sunday Night Open 🌙</span>' : ''}
+                    </div>
+                    <div class="absolute bottom-4 right-4 bg-white/90 backdrop-blur px-3 py-1 rounded-xl shadow-sm text-xs font-bold text-emerald-700">
+                        ${mess.distanceMeters}m from PICT
+                    </div>
+                </div>
+                <div class="p-6 space-y-4">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <h3 class="text-xl font-heading font-extrabold text-slate-900">${mess.name}</h3>
+                            <p class="text-slate-500 text-sm font-medium">${mess.cuisineCategory} • ${mess.foodType}</p>
+                        </div>
+                        <div class="text-right">
+                            <span class="text-2xl font-black text-emerald-600">₹${mess.pricing.dailyPlate}</span>
+                            <p class="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Per Plate</p>
+                        </div>
+                    </div>
+                    
+                    <div class="flex flex-wrap gap-2">
+                        ${mess.specialtyTags.slice(0, 2).map(tag => `<span class="bg-slate-100 text-slate-600 px-3 py-1 rounded-lg text-xs font-semibold">${tag}</span>`).join('')}
+                    </div>
+
+                    <div class="pt-4 border-t border-slate-100 flex items-center justify-between">
+                        <div>
+                            <p class="text-[10px] text-slate-400 font-black uppercase tracking-widest">Monthly Pass</p>
+                            <p class="font-bold text-slate-700 text-sm">₹${mess.pricing.monthlyPass2x}/mo</p>
+                        </div>
+                        <button onclick="navigateTo('mess', ${mess.id})" class="px-6 py-3 bg-slate-900 text-white text-xs font-black rounded-xl hover:bg-emerald-600 transition uppercase tracking-widest">
+                            View Profile
+                        </button>
+                    </div>
+                </div>
+            </div>
+        `).join('');
+        lucide.createIcons();
+    }
+
+    function renderDetailView(mess) {
+        const container = document.getElementById('detail-content');
+        container.innerHTML = `
+            <!-- Sticky Header -->
+            <div class="bg-white border-b border-slate-200 py-4 px-4 sticky top-16 z-40">
+                <div class="max-w-7xl mx-auto flex items-center justify-between">
+                    <button onclick="navigateTo('home')" class="flex items-center gap-2 text-sm font-bold text-slate-600 hover:text-emerald-600">
+                        <i data-lucide="arrow-left" class="w-4 h-4"></i> Back to Messes
+                    </button>
+                    <div class="flex gap-3">
+                        <a href="tel:${mess.contact}" class="px-5 py-2 bg-emerald-600 text-white text-sm font-bold rounded-full shadow-lg shadow-emerald-200">Call Owner</a>
+                        <a href="https://www.google.com/maps/dir/?api=1&destination=${mess.lat},${mess.lng}&travelmode=walking" target="_blank" class="px-5 py-2 bg-slate-900 text-white text-sm font-bold rounded-full">Directions</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Hero Section -->
+            <div class="relative h-64 md:h-96 w-full">
+                <img src="${mess.images[0]}" class="w-full h-full object-cover">
+                <div class="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/40 to-transparent"></div>
+                <div class="absolute bottom-10 left-0 w-full">
+                    <div class="max-w-7xl mx-auto px-4 text-white">
+                        <div class="flex items-center gap-3 mb-2">
+                            <span class="bg-emerald-500 text-white text-[10px] font-black px-3 py-1 rounded-full uppercase">${mess.category}</span>
+                            ${mess.sundayNightOpen ? '<span class="bg-amber-500 text-[10px] font-black px-3 py-1 rounded-full uppercase">Sunday Night Open 🌙</span>' : ''}
+                        </div>
+                        <h1 class="text-4xl md:text-6xl font-heading font-extrabold mb-2">${mess.name}</h1>
+                        <p class="text-slate-200 flex items-center gap-2"><i data-lucide="map-pin" class="w-4 h-4"></i> ${mess.address}</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="max-w-7xl mx-auto px-4 grid grid-cols-1 lg:grid-cols-3 gap-8 py-12">
+                <div class="lg:col-span-2 space-y-8">
+                    
+                    <!-- Highlights -->
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                        <div class="bg-emerald-50 p-6 rounded-3xl border border-emerald-100">
+                            <h4 class="text-emerald-800 font-bold mb-2">Signature</h4>
+                            <p class="text-emerald-700 text-sm font-medium">${mess.ownerSpecialty}</p>
+                        </div>
+                        <div class="bg-slate-900 p-6 rounded-3xl text-white">
+                            <h4 class="text-emerald-400 font-bold mb-2">Hygiene</h4>
+                            <p class="text-slate-300 text-sm font-medium">${mess.waterFacility}</p>
+                        </div>
+                        <div class="bg-amber-50 p-6 rounded-3xl border border-amber-100">
+                            <h4 class="text-amber-800 font-bold mb-2">Rule</h4>
+                            <p class="text-amber-700 text-sm font-medium">${mess.servingRule}</p>
+                        </div>
+                    </div>
+
+                    <!-- Pricing Matrix -->
+                    <div class="bg-white p-8 rounded-[2.5rem] shadow-xl border border-slate-100">
+                        <h3 class="text-2xl font-heading font-extrabold mb-6">Pricing & Plans</h3>
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+                            <div class="p-4 bg-slate-50 rounded-2xl">
+                                <p class="text-[10px] font-black text-slate-400 uppercase mb-1">Daily Plate</p>
+                                <p class="text-xl font-bold text-slate-900">₹${mess.pricing.dailyPlate}</p>
+                            </div>
+                            <div class="p-4 bg-slate-50 rounded-2xl">
+                                <p class="text-[10px] font-black text-slate-400 uppercase mb-1">Monthly (1x)</p>
+                                <p class="text-xl font-bold text-slate-900">₹${mess.pricing.monthlyPass1x}</p>
+                            </div>
+                            <div class="p-4 bg-emerald-600 text-white rounded-2xl">
+                                <p class="text-[10px] font-black text-emerald-100 uppercase mb-1">Monthly (2x)</p>
+                                <p class="text-xl font-bold">₹${mess.pricing.monthlyPass2x}</p>
+                            </div>
+                            <div class="p-4 bg-amber-500 text-white rounded-2xl">
+                                <p class="text-[10px] font-black text-amber-100 uppercase mb-1">Sunday Feast</p>
+                                <p class="text-xl font-bold">₹${mess.pricing.sundayFeast}</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Gut Health Badges -->
+                    <div class="bg-white p-8 rounded-[2.5rem] shadow-sm border border-slate-200">
+                        <h3 class="text-2xl font-heading font-extrabold mb-6">Student Feedback Highlights</h3>
+                        <div class="flex flex-wrap gap-4">
+                            ${mess.studentHighlights.map(h => `
+                                <div class="flex items-center gap-3 bg-slate-50 px-5 py-3 rounded-2xl border border-slate-100">
+                                    <div class="w-8 h-8 bg-white rounded-full flex items-center justify-center shadow-sm">
+                                        <i data-lucide="check-circle" class="w-5 h-5 text-emerald-500"></i>
+                                    </div>
+                                    <span class="font-bold text-slate-700">${h}</span>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+
+                    <!-- Comparison Tool -->
+                    <div class="bg-slate-900 text-white p-8 md:p-12 rounded-[3rem] shadow-2xl">
+                        <h3 class="text-2xl md:text-3xl font-heading font-extrabold mb-4">Smart Compare ⚖️</h3>
+                        <p class="text-slate-400 mb-8">Contrast ${mess.name} with any other mess in the locality.</p>
+                        
+                        <select id="compare-select" onchange="runComparison(${mess.id})" class="w-full bg-slate-800 border-none rounded-2xl p-4 text-white font-bold mb-8">
+                            <option value="">Select a mess to compare...</option>
+                            ${messesData.filter(m => m.id != mess.id).map(m => `<option value="${m.id}">${m.name}</option>`).join('')}
+                        </select>
+
+                        <div id="compare-result" class="overflow-x-auto"></div>
+                    </div>
+
+                    <!-- Review Section -->
+                    <div class="bg-white p-8 rounded-[2.5rem] shadow-sm border border-slate-200">
+                        <h3 class="text-2xl font-heading font-extrabold mb-8">Verified Student Reviews</h3>
+                        
+                        <form onsubmit="handleReviewSubmit(event, ${mess.id})" class="space-y-6 mb-12 bg-slate-50 p-6 rounded-3xl">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <input type="text" id="rev-name" placeholder="Name" class="w-full p-4 rounded-2xl border-none ring-1 ring-slate-200 shadow-sm" required>
+                                <input type="email" id="rev-email" placeholder="Email (use @pict.edu for badge)" class="w-full p-4 rounded-2xl border-none ring-1 ring-slate-200 shadow-sm" required>
+                            </div>
+                            <div class="flex items-center gap-4">
+                                <span class="text-sm font-bold text-slate-500">Rating:</span>
+                                <select id="rev-rating" class="p-3 rounded-xl border-none ring-1 ring-slate-200">
+                                    <option value="5">⭐⭐⭐⭐⭐ (Excellent)</option>
+                                    <option value="4">⭐⭐⭐⭐ (Good)</option>
+                                    <option value="3">⭐⭐⭐ (Average)</option>
+                                </select>
+                            </div>
+                            <textarea id="rev-comment" placeholder="Share your experience (Hygiene, Taste, Owner behavior)..." class="w-full p-4 rounded-2xl border-none ring-1 ring-slate-200 shadow-sm h-32" required></textarea>
+                            <button type="submit" class="w-full py-4 bg-emerald-600 text-white font-black rounded-2xl hover:bg-emerald-700 transition uppercase tracking-widest">Post Review</button>
+                        </form>
+
+                        <div id="reviews-list" class="space-y-6">
+                            <!-- Field Survey Review -->
+                            <div class="p-6 bg-slate-50 rounded-3xl border-l-4 border-slate-900">
+                                <div class="flex items-center gap-2 mb-2">
+                                    <span class="px-2 py-0.5 bg-slate-900 text-white text-[10px] font-black rounded uppercase">OFFICIAL AUDIT</span>
+                                    <span class="text-xs font-bold text-slate-400">Aug 2026</span>
+                                </div>
+                                <p class="text-slate-600 text-sm font-medium">"${mess.name} has been physically verified for student cleanliness standards. Serving staff follows hand-washing protocols. Overall hygiene rating: ${mess.hygieneRating}/5.0."</p>
+                                <div class="mt-3 flex items-center gap-2">
+                                    <div class="w-6 h-6 bg-emerald-100 rounded-full flex items-center justify-center"><i data-lucide="shield-check" class="w-3 h-3 text-emerald-600"></i></div>
+                                    <span class="text-[10px] font-black text-slate-500 uppercase tracking-widest">${mess.surveyDetails}</span>
+                                </div>
+                            </div>
+                            <div id="user-reviews"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sidebar -->
+                <div class="space-y-6">
+                    <div class="bg-white p-6 rounded-3xl shadow-sm border border-slate-200">
+                        <h4 class="font-heading font-extrabold text-lg mb-4">Operations</h4>
+                        <div class="space-y-4">
+                            <div class="flex justify-between items-center py-2 border-b border-slate-50">
+                                <span class="text-sm font-bold text-slate-500">Lunch</span>
+                                <span class="text-sm font-bold text-slate-900">${mess.timings.lunch}</span>
+                            </div>
+                            <div class="flex justify-between items-center py-2 border-b border-slate-50">
+                                <span class="text-sm font-bold text-slate-500">Dinner</span>
+                                <span class="text-sm font-bold text-slate-900">${mess.timings.dinner}</span>
+                            </div>
+                            <div class="flex justify-between items-center py-2">
+                                <span class="text-sm font-bold text-slate-500">Delivery</span>
+                                <span class="text-sm font-bold text-emerald-600">${mess.pricing.delivery}</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white p-6 rounded-3xl shadow-sm border border-slate-200">
+                        <h4 class="font-heading font-extrabold text-lg mb-4">Facilities</h4>
+                        <div class="flex flex-wrap gap-2">
+                            ${mess.facilities.map(f => `<span class="bg-slate-100 text-slate-600 px-3 py-1.5 rounded-xl text-xs font-bold">${f}</span>`).join('')}
+                        </div>
+                    </div>
+
+                    <div class="p-6 bg-emerald-600 rounded-3xl text-white">
+                        <i data-lucide="info" class="mb-3"></i>
+                        <h4 class="font-bold mb-2">Student Tip</h4>
+                        <p class="text-sm text-emerald-50">Ask the owner for a 'Trial Plate' at ₹${mess.pricing.dailyPlate} before committing to a monthly pass.</p>
+                    </div>
+                </div>
+            </div>
+        `;
+        lucide.createIcons();
+        renderUserReviews(mess.id);
+    }
+
+    // Feature: Comparison Logic
+    function runComparison(messId) {
+        const m1 = messesData.find(m => m.id == messId);
+        const m2Id = document.getElementById('compare-select').value;
+        if (!m2Id) return;
+        const m2 = messesData.find(m => m.id == m2Id);
+
+        const result = document.getElementById('compare-result');
+        result.innerHTML = `
+            <table class="w-full text-left border-collapse mt-4">
+                <thead>
+                    <tr class="text-slate-500 text-[10px] uppercase tracking-widest font-black">
+                        <th class="py-4 border-b border-slate-800">Feature</th>
+                        <th class="py-4 border-b border-slate-800">${m1.name}</th>
+                        <th class="py-4 border-b border-slate-800">${m2.name}</th>
+                    </tr>
+                </thead>
+                <tbody class="text-sm font-bold">
+                    <tr><td class="py-4 border-b border-slate-800 text-slate-400">Single Plate</td><td class="py-4 border-b border-slate-800">₹${m1.pricing.dailyPlate}</td><td class="py-4 border-b border-slate-800">₹${m2.pricing.dailyPlate}</td></tr>
+                    <tr><td class="py-4 border-b border-slate-800 text-slate-400">Monthly Pass (2x)</td><td class="py-4 border-b border-slate-800">₹${m1.pricing.monthlyPass2x}</td><td class="py-4 border-b border-slate-800">₹${m2.pricing.monthlyPass2x}</td></tr>
+                    <tr><td class="py-4 border-b border-slate-800 text-slate-400">Sunday Night</td><td class="py-4 border-b border-slate-800">${m1.sundayNightOpen ? '✅ Open' : '❌ Closed'}</td><td class="py-4 border-b border-slate-800">${m2.sundayNightOpen ? '✅ Open' : '❌ Closed'}</td></tr>
+                    <tr><td class="py-4 border-b border-slate-800 text-slate-400">Distance</td><td class="py-4 border-b border-slate-800">${m1.distanceMeters}m</td><td class="py-4 border-b border-slate-800">${m2.distanceMeters}m</td></tr>
+                    <tr><td class="py-4 border-b border-slate-800 text-slate-400">Serving</td><td class="py-4 border-b border-slate-800">${m1.servingRule}</td><td class="py-4 border-b border-slate-800">${m2.servingRule}</td></tr>
+                </tbody>
+            </table>
+        `;
+    }
+
+    // Feature: Review System
+    function handleReviewSubmit(e, messId) {
+        e.preventDefault();
+        const review = {
+            id: Date.now(),
+            messId,
+            name: document.getElementById('rev-name').value,
+            email: document.getElementById('rev-email').value,
+            rating: document.getElementById('rev-rating').value,
+            comment: document.getElementById('rev-comment').value,
+            date: new Date().toLocaleDateString()
+        };
+
+        const existing = JSON.parse(localStorage.getItem('messmitra_reviews') || '[]');
+        existing.push(review);
+        localStorage.setItem('messmitra_reviews', JSON.stringify(existing));
+        
+        e.target.reset();
+        renderUserReviews(messId);
+    }
+
+    function renderUserReviews(messId) {
+        const container = document.getElementById('user-reviews');
+        const reviews = JSON.parse(localStorage.getItem('messmitra_reviews') || '[]')
+                           .filter(r => r.messId === messId);
+
+        container.innerHTML = reviews.reverse().map(r => {
+            const isPict = r.email.toLowerCase().includes('pict');
+            return `
+                <div class="py-6 border-b border-slate-100 last:border-0">
+                    <div class="flex justify-between items-start mb-2">
+                        <div>
+                            <h5 class="font-bold text-slate-900">${r.name}</h5>
+                            <div class="flex items-center gap-2 mt-1">
+                                ${isPict ? '<span class="bg-emerald-100 text-emerald-700 text-[9px] font-black px-2 py-0.5 rounded-full uppercase">🎓 Verified PICT Student</span>' : '<span class="bg-slate-100 text-slate-600 text-[9px] font-black px-2 py-0.5 rounded-full uppercase">Student</span>'}
+                                <span class="text-[10px] text-slate-400 font-bold">${r.date}</span>
+                            </div>
+                        </div>
+                        <div class="text-amber-500 font-bold">
+                            ${'⭐'.repeat(r.rating)}
+                        </div>
+                    </div>
+                    <p class="text-slate-600 text-sm italic">"${r.comment}"</p>
+                </div>
+            `;
+        }).join('');
+    }
+</script>
+</body>
+</html>

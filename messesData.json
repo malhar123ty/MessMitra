@@ -1,0 +1,572 @@
+[
+  {
+    "id": 1,
+    "name": "Kirteshwar Khanawal",
+    "category": "Daily Mess",
+    "owner": "Mrs. Pratibha Bapurao Tekale",
+    "contact": "+91 7888227358",
+    "address": "Near PICT Back Gate, Dhankawadi, Pune",
+    "distanceMeters": 250,
+    "lat": 18.4586,
+    "lng": 73.8512,
+    "foodType": "Veg & Non-Veg",
+    "cuisineCategory": "Maharashtrian",
+    "specialtyTags": ["Daily Fresh Meals", "Chicken Thali", "Sunday Night Open"],
+    "pricing": {
+      "dailyPlate": 80,
+      "dailyNonVeg": 150,
+      "monthlyPass1x": 2000,
+      "monthlyPass2x": 4000,
+      "sundayFeast": 80,
+      "delivery": "Included (Same rate)"
+    },
+    "timings": {
+      "lunch": "11:30 AM - 03:30 PM",
+      "dinner": "07:00 PM - 11:00 PM (All day till 11 PM)"
+    },
+    "sundayNightOpen": true,
+    "hygieneRating": 4.3,
+    "waterFacility": "Normal Filter Jar",
+    "seatingCapacity": 20,
+    "ownerSpecialty": "Authentic Maharashtrian Chicken Thali (₹150) & Daily Homely Veg Meals",
+    "studentHighlights": ["Open on Sunday Nights!", "Free room delivery included", "Ghar-jaisa light Maharashtrian taste"],
+    "servingRule": "Unlimited Roti/Bhakri & Gravy",
+    "facilities": ["Clean Seating Area", "Handwash Basin", "Daily Disinfection"],
+    "images": [
+      "https://images.unsplash.com/photo-1613292443284-8d10ef9383fe?w=800&auto=format&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1626777552726-4a6b54c97e46?w=800&auto=format&fit=crop&q=80"
+    ],
+    "surveyDetails": "Surveyed 12/08/2026 by Malhar (PRN: 22226)"
+  },
+  {
+    "id": 2,
+    "name": "Deep's Kitchen",
+    "category": "Daily Mess & Tiffin",
+    "owner": "Mrs. Deepali Kishor Pawar",
+    "contact": "+91 9923886667",
+    "address": "Dhankawadi, near PICT, Pune",
+    "distanceMeters": 250,
+    "lat": 18.4589,
+    "lng": 73.8518,
+    "foodType": "Veg & Non-Veg",
+    "cuisineCategory": "Maharashtrian",
+    "specialtyTags": ["Homestyle Cooking", "3x Non-Veg Schedule", "Low Acidity"],
+    "pricing": {
+      "dailyPlate": 80,
+      "dailyNonVeg": 120,
+      "monthlyPass1x": 2200,
+      "monthlyPass2x": 4200,
+      "monthlyNonVeg1x": 2400,
+      "monthlyNonVeg2x": 3800,
+      "sundayFeast": 80,
+      "delivery": "Available"
+    },
+    "timings": {
+      "lunch": "12:00 PM - 03:30 PM",
+      "dinner": "07:00 PM - 10:30 PM"
+    },
+    "sundayNightOpen": false,
+    "hygieneRating": 4.5,
+    "waterFacility": "Normal Filter Jar",
+    "seatingCapacity": 30,
+    "ownerSpecialty": "3-Times Weekly Non-Veg Feast (Wed, Fri, Sun) & Non-Greasy Daily Veg",
+    "studentHighlights": ["Hot and soft tawa phulkas", "Zero acidity cooking", "Clean and peaceful seating"],
+    "servingRule": "Unlimited Dal-Bhat & Sabzi",
+    "facilities": ["Handwash Basin", "Clean Dining Space", "Daily Disinfection"],
+    "images": [
+      "https://images.unsplash.com/photo-1546833999-b9f581a1996d?w=800&auto=format&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1589301760014-d929f3979dbc?w=800&auto=format&fit=crop&q=80"
+    ],
+    "surveyDetails": "Surveyed 12/08/2026 by Pawan (PRN: 22236)"
+  },
+  {
+    "id": 3,
+    "name": "Aai Mess",
+    "category": "Daily Mess",
+    "owner": "Mrs. Ambika Muttepwar",
+    "contact": "+91 9156823051",
+    "address": "Dhankawadi, 3 mins from PICT Gate",
+    "distanceMeters": 250,
+    "lat": 18.4578,
+    "lng": 73.8524,
+    "foodType": "Pure Veg",
+    "cuisineCategory": "Maharashtrian",
+    "specialtyTags": ["100% Pure Veg", "Motherly Taste", "Sunday Special"],
+    "pricing": {
+      "dailyPlate": 80,
+      "monthlyPass1x": 2000,
+      "monthlyPass2x": 3400,
+      "sundayFeast": 90,
+      "delivery": "Available"
+    },
+    "timings": {
+      "lunch": "12:00 PM - 03:00 PM",
+      "dinner": "08:00 PM - 10:30 PM"
+    },
+    "sundayNightOpen": false,
+    "hygieneRating": 4.6,
+    "waterFacility": "Normal Filter Jar",
+    "seatingCapacity": 40,
+    "ownerSpecialty": "100% Pure Veg Home Style Meal, Special Sunday Feast (₹90)",
+    "studentHighlights": ["Hot chapatis served directly from tawa", "Homely Dal Tadka", "Spacious 40-seat dining hall"],
+    "servingRule": "Unlimited Veg Thali",
+    "facilities": ["Handwash Sink", "Clean Dining Tables", "Daily Sanitization"],
+    "images": [
+      "https://images.unsplash.com/photo-1626777552726-4a6b54c97e46?w=800&auto=format&fit=crop&q=80"
+    ],
+    "surveyDetails": "Surveyed 12/08/2026 by Parth (PRN: 22235)"
+  },
+  {
+    "id": 4,
+    "name": "Kashi Vishweshwar Mess",
+    "category": "Daily Mess",
+    "owner": "Mr. Anil Anantrao Sarvade",
+    "contact": "+91 8421844492",
+    "address": "Near PICT Gate, Dhankawadi, Pune",
+    "distanceMeters": 250,
+    "lat": 18.4568,
+    "lng": 73.8519,
+    "foodType": "Veg & Non-Veg",
+    "cuisineCategory": "Maharashtrian",
+    "specialtyTags": ["Friday Egg Curry", "Budget Pass", "Sunday Non-Veg"],
+    "pricing": {
+      "dailyPlate": 80,
+      "dailyEgg": 90,
+      "dailyNonVeg": 100,
+      "monthlyPass1x": 2000,
+      "monthlyPass2x": 3000,
+      "sundayFeast": 100,
+      "delivery": "+₹10 / delivery"
+    },
+    "timings": {
+      "lunch": "12:00 PM - 03:00 PM",
+      "dinner": "08:00 PM - 10:30 PM"
+    },
+    "sundayNightOpen": false,
+    "hygieneRating": 4.2,
+    "waterFacility": "Normal Filter Jar",
+    "seatingCapacity": 20,
+    "ownerSpecialty": "Friday Special Egg Night (₹90) & Sunday Non-Veg Thali (₹100)",
+    "studentHighlights": ["Most affordable monthly pass (₹3,000 for 2 meals/day)", "Rich Egg Curry", "Fast service"],
+    "servingRule": "Standard Thali with unlimited gravy",
+    "facilities": ["Handwash Area", "Clean Seating", "Daily Disinfection"],
+    "images": [
+      "https://images.unsplash.com/photo-1546833999-b9f581a1996d?w=800&auto=format&fit=crop&q=80"
+    ],
+    "surveyDetails": "Surveyed 12/08/2026 by Malhar (PRN: 22226)"
+  },
+  {
+    "id": 5,
+    "name": "Hotel Abhiruchi",
+    "category": "Local Restaurant & Mess",
+    "owner": "Mrs. Sharda Sanjay Pawar",
+    "contact": "+91 9822547693",
+    "address": "Main Road, Dhankawadi (500m from PICT)",
+    "distanceMeters": 500,
+    "lat": 18.4552,
+    "lng": 73.8488,
+    "foodType": "Veg & Non-Veg",
+    "cuisineCategory": "Multi-Cuisine",
+    "specialtyTags": ["15+ Years Exp", "Open Sunday Night", "Kolhapuri Special"],
+    "pricing": {
+      "dailyPlate": 90,
+      "dailyNonVeg": 140,
+      "monthlyPass1x": 2200,
+      "monthlyPass2x": 4000,
+      "sundayFeast": 90,
+      "delivery": "Available"
+    },
+    "timings": {
+      "lunch": "12:00 PM - 03:30 PM",
+      "dinner": "08:00 PM - 11:00 PM"
+    },
+    "sundayNightOpen": true,
+    "hygieneRating": 4.4,
+    "waterFacility": "Normal Filter Jar",
+    "seatingCapacity": 25,
+    "ownerSpecialty": "15 Years Experience, Multi-cuisine variety, Full Sunday Night Operations",
+    "studentHighlights": ["Sunday night dinner lifesaver", "Spicy Kolhapuri options", "Open late till 11 PM"],
+    "servingRule": "Unlimited Thali option available",
+    "facilities": ["Handwash Basin", "Clean Dining Setup", "Daily Sanitation"],
+    "images": [
+      "https://images.unsplash.com/photo-1613292443284-8d10ef9383fe?w=800&auto=format&fit=crop&q=80"
+    ],
+    "surveyDetails": "Surveyed 12/08/2026 by Malhar (PRN: 22226)"
+  },
+  {
+    "id": 6,
+    "name": "Jay Shankar Mess",
+    "category": "Daily Mess",
+    "owner": "Mrs. Survashe Poonam",
+    "contact": "+91 9623045151",
+    "address": "Near Katraj-Dhankawadi Link Road, Pune",
+    "distanceMeters": 300,
+    "lat": 18.4562,
+    "lng": 73.8532,
+    "foodType": "Veg & Non-Veg",
+    "cuisineCategory": "Maharashtrian",
+    "specialtyTags": ["Daily Gulab Jamun", "Jowar Bhakri", "Spicy Thecha"],
+    "pricing": {
+      "dailyPlate": 80,
+      "dailyNonVeg": 130,
+      "monthlyPass1x": 1800,
+      "monthlyPass2x": 3500,
+      "monthlyNonVeg1x": 2200,
+      "monthlyNonVeg2x": 4000,
+      "sundayFeast": 80
+    },
+    "timings": {
+      "lunch": "09:00 AM - 03:00 PM (Early Lunch)",
+      "dinner": "07:00 PM - 10:00 PM"
+    },
+    "sundayNightOpen": false,
+    "hygieneRating": 4.5,
+    "waterFacility": "Normal Filter Jar",
+    "seatingCapacity": 45,
+    "ownerSpecialty": "Daily Sweet (Gulab Jamun), Warm Jowar Bhakri & Hand-pounded Thecha",
+    "studentHighlights": ["Daily Gulab Jamun included", "Authentic spicy Kolhapuri thecha", "Opens early at 9:00 AM"],
+    "servingRule": "Limited Plate: 3 Chapati/Bhakri, Rice, Dal, 2 Bhaji, Thecha & Sweet",
+    "facilities": ["Handwash Station", "Large 45+ Seating Hall", "Daily Disinfection"],
+    "images": [
+      "https://images.unsplash.com/photo-1626777552726-4a6b54c97e46?w=800&auto=format&fit=crop&q=80"
+    ],
+    "surveyDetails": "Surveyed 12/08/2026 by Parth (PRN: 22235)"
+  },
+  {
+    "id": 7,
+    "name": "SK Dining (Santosh Mess)",
+    "category": "Daily Mess",
+    "owner": "Mr. Santosh Kumar Mishra",
+    "contact": "+91 9403098405",
+    "address": "Dhankawadi, near PICT Back Gate",
+    "distanceMeters": 260,
+    "lat": 18.4591,
+    "lng": 73.8504,
+    "foodType": "Pure Veg",
+    "cuisineCategory": "North Indian",
+    "specialtyTags": ["Desi Ghee Phulke", "Dal Makhani", "North Indian Specialist"],
+    "pricing": {
+      "dailyPlate": 90,
+      "monthlyPass1x": 2400,
+      "monthlyPass2x": 4200,
+      "sundayFeast": 100,
+      "delivery": "+₹20 / tiffin"
+    },
+    "timings": {
+      "lunch": "12:00 PM - 02:00 PM",
+      "dinner": "08:00 PM - 09:45 PM"
+    },
+    "sundayNightOpen": false,
+    "hygieneRating": 4.7,
+    "waterFacility": "Normal Filter Jar",
+    "seatingCapacity": 40,
+    "ownerSpecialty": "North Indian Desi Ghee Phulke, Dal Makhani, Paneer curries",
+    "studentHighlights": ["Top pick for North Indian and outstation freshers", "100% Pure Desi Ghee phulkas", "Spotless kitchen"],
+    "servingRule": "Unlimited North Indian Meals",
+    "facilities": ["Handwash Area", "Spacious 40-Seat Dining Hall", "Daily Cleanliness Protocol"],
+    "images": [
+      "https://images.unsplash.com/photo-1589301760014-d929f3979dbc?w=800&auto=format&fit=crop&q=80"
+    ],
+    "surveyDetails": "Surveyed 19/08/2026 by Parth (PRN: 22235)"
+  },
+  {
+    "id": 8,
+    "name": "Sadguru Mess",
+    "category": "Daily Mess",
+    "owner": "Mr. Amit Shukla",
+    "contact": "+91 9404073499",
+    "address": "Dhankawadi, Near PICT, Pune",
+    "distanceMeters": 250,
+    "lat": 18.4572,
+    "lng": 73.8529,
+    "foodType": "Pure Veg",
+    "cuisineCategory": "North Indian",
+    "specialtyTags": ["RO Drinking Water", "Open Sunday Night", "Late Night (11:30 PM)"],
+    "pricing": {
+      "dailyPlate": 80,
+      "monthlyPass1x": 2200,
+      "monthlyPass2x": 4400,
+      "sundayFeast": 100,
+      "delivery": "Available"
+    },
+    "timings": {
+      "lunch": "11:00 AM - 03:30 PM",
+      "dinner": "06:30 PM - 11:30 PM (Late Night!)"
+    },
+    "sundayNightOpen": true,
+    "hygieneRating": 4.6,
+    "waterFacility": "Certified RO Water Filter System",
+    "seatingCapacity": 16,
+    "ownerSpecialty": "Certified On-Site RO Drinking Water, Late Night Dinner till 11:30 PM, Open Sunday Nights",
+    "studentHighlights": ["Open on Sunday nights", "Dinner available till 11:30 PM for exam nights", "Certified RO Water plant"],
+    "servingRule": "Unlimited Dal, Rice & Sabzi",
+    "facilities": ["On-Site RO Filter Unit", "Handwash Basin", "Daily Disinfection"],
+    "images": [
+      "https://images.unsplash.com/photo-1546833999-b9f581a1996d?w=800&auto=format&fit=crop&q=80"
+    ],
+    "surveyDetails": "Surveyed 19/08/2026 by Pawan (PRN: 22236)"
+  },
+  {
+    "id": 9,
+    "name": "Sujata Mess",
+    "category": "Daily Mess",
+    "owner": "Mr. Nitin Yadav",
+    "contact": "+91 9850001686",
+    "address": "Dhankawadi, near PICT, Pune",
+    "distanceMeters": 250,
+    "lat": 18.4580,
+    "lng": 73.8495,
+    "foodType": "Veg & Non-Veg",
+    "cuisineCategory": "Maharashtrian",
+    "specialtyTags": ["Wed & Sun Non-Veg", "Sweet Feast", "Budget Pass"],
+    "pricing": {
+      "dailyPlate": 100,
+      "monthlyPass1x": 2000,
+      "monthlyPass2x": 3500,
+      "sundayFeast": 130,
+      "delivery": "Available"
+    },
+    "timings": {
+      "lunch": "12:00 PM - 03:00 PM",
+      "dinner": "07:00 PM - 11:00 PM"
+    },
+    "sundayNightOpen": false,
+    "hygieneRating": 4.3,
+    "waterFacility": "Normal Filter Jar",
+    "seatingCapacity": 20,
+    "ownerSpecialty": "Two-Times Weekly Non-Veg Gravy & Sweet Feast (Wed & Sun)",
+    "studentHighlights": ["Rich Non-veg gravy on Wednesdays & Sundays", "Economical 2-time monthly pass (₹3,500)", "Dinner open till 11:00 PM"],
+    "servingRule": "Unlimited Veg Thali, Fixed Non-Veg Portions",
+    "facilities": ["Clean Tables", "Handwash Area", "Daily Sanitation"],
+    "images": [
+      "https://images.unsplash.com/photo-1613292443284-8d10ef9383fe?w=800&auto=format&fit=crop&q=80"
+    ],
+    "surveyDetails": "Surveyed 19/08/2026 by Parth (PRN: 22235)"
+  },
+  {
+    "id": 10,
+    "name": "Hotel Maitri Katta",
+    "category": "Local Restaurant & Mess",
+    "owner": "Mr. Niraj Tyagi",
+    "contact": "+91 7558742925",
+    "address": "Dhankawadi Main Road (500m from PICT)",
+    "distanceMeters": 500,
+    "lat": 18.4548,
+    "lng": 73.8520,
+    "foodType": "Veg & Non-Veg",
+    "cuisineCategory": "Multi-Cuisine",
+    "specialtyTags": ["Free 2km Delivery", "Sunday Paneer Thali", "Restaurant Style"],
+    "pricing": {
+      "dailyPlate": 90,
+      "monthlyPass1x": 2000,
+      "monthlyPass2x": 3600,
+      "sundayFeast": 90,
+      "delivery": "Free within 2 km radius"
+    },
+    "timings": {
+      "lunch": "11:30 AM - 03:30 PM",
+      "dinner": "07:00 PM - 10:30 PM"
+    },
+    "sundayNightOpen": false,
+    "hygieneRating": 4.4,
+    "waterFacility": "Normal Filter Jar",
+    "seatingCapacity": 32,
+    "ownerSpecialty": "Sunday Special Paneer & Sweet (included in standard ₹90 rate), Free delivery up to 2km",
+    "studentHighlights": ["Free room delivery up to 2 km", "Sunday Paneer Thali is a student hit", "Closed 2nd & 4th Monday"],
+    "servingRule": "Complete Multi-Cuisine Thali",
+    "facilities": ["Handwash Basin", "Daily Cleanliness Drive", "32-Seat Seating"],
+    "images": [
+      "https://images.unsplash.com/photo-1626777552726-4a6b54c97e46?w=800&auto=format&fit=crop&q=80"
+    ],
+    "surveyDetails": "Surveyed 19/08/2026 by Parth (PRN: 22235)"
+  },
+  {
+    "id": 11,
+    "name": "Kokan Katta",
+    "category": "Daily Mess & Eatery",
+    "owner": "Mr. Ganesh Ghadegaon",
+    "contact": "+91 8983106179",
+    "address": "Dhankawadi, 4 mins walk from PICT Gate",
+    "distanceMeters": 300,
+    "lat": 18.4565,
+    "lng": 73.8540,
+    "foodType": "Veg & Non-Veg",
+    "cuisineCategory": "Kokani Coastal",
+    "specialtyTags": ["Kokani Masala", "Solkadhi", "₹100 Sunday Non-Veg"],
+    "pricing": {
+      "dailyPlate": 100,
+      "monthlyPass1x": 2000,
+      "monthlyPass2x": 3500,
+      "sundayFeast": 100,
+      "delivery": "Available"
+    },
+    "timings": {
+      "lunch": "12:00 PM - 03:00 PM",
+      "dinner": "07:30 PM - 11:00 PM"
+    },
+    "sundayNightOpen": false,
+    "hygieneRating": 4.4,
+    "waterFacility": "Normal Filter Jar",
+    "seatingCapacity": 20,
+    "ownerSpecialty": "Authentic Kokani Spices, Fresh Solkadhi, Sunday Special Non-Veg Thali (₹100)",
+    "studentHighlights": ["Rare authentic Coastal Kokani food in Pune", "Sunday Non-Veg thali at just ₹100", "Homely staff"],
+    "servingRule": "Unlimited Rice & Kokani Curry",
+    "facilities": ["Handwash Station", "Disinfected Dining Space", "Clean Cutlery"],
+    "images": [
+      "https://images.unsplash.com/photo-1546833999-b9f581a1996d?w=800&auto=format&fit=crop&q=80"
+    ],
+    "surveyDetails": "Surveyed 19/08/2026 by Pawan (PRN: 22236)"
+  },
+  {
+    "id": 12,
+    "name": "Shankar Maharaj Mess",
+    "category": "Daily Mess",
+    "owner": "Mrs. Swati Dighe",
+    "contact": "+91 7499186937",
+    "address": "Dhankawadi (350m from PICT Gate)",
+    "distanceMeters": 350,
+    "lat": 18.4558,
+    "lng": 73.8510,
+    "foodType": "Veg & Non-Veg",
+    "cuisineCategory": "Maharashtrian",
+    "specialtyTags": ["Saturday Aloo Parathas", "Menu Rotation", "Hostel Tiffin"],
+    "pricing": {
+      "dailyPlate": 100,
+      "dailyEgg": 120,
+      "dailyNonVeg": 150,
+      "monthlyPass1x": 2200,
+      "monthlyPass2x": 4000,
+      "sundayFeast": 160,
+      "delivery": "+₹100/+200 Monthly"
+    },
+    "timings": {
+      "lunch": "12:00 PM - 03:00 PM",
+      "dinner": "07:15 PM - 11:00 PM"
+    },
+    "sundayNightOpen": false,
+    "hygieneRating": 4.5,
+    "waterFacility": "Normal Filter Jar",
+    "seatingCapacity": 25,
+    "ownerSpecialty": "Fortnightly Menu Rotation: Saturday Special Aloo Parathas, Tue/Fri Chicken, Wed Egg",
+    "studentHighlights": ["Saturday hot parathas are famous", "High nutritional balance", "Tiffin delivery available across hostels"],
+    "servingRule": "Unlimited Veg Thali with fresh chapatis",
+    "facilities": ["Handwash Sink", "Clean Floor & Tables", "Daily Sanitation"],
+    "images": [
+      "https://images.unsplash.com/photo-1589301760014-d929f3979dbc?w=800&auto=format&fit=crop&q=80"
+    ],
+    "surveyDetails": "Surveyed 19/08/2026 by Malhar (PRN: 22226)"
+  },
+  {
+    "id": 13,
+    "name": "Annapurna Snacks & Dining Centre",
+    "category": "Daily Mess & Snacks",
+    "owner": "Mrs. Shushma Kosumbkar",
+    "contact": "+91 7385749224",
+    "address": "Near Katraj Chowk (850m from PICT)",
+    "distanceMeters": 850,
+    "lat": 18.4520,
+    "lng": 73.8550,
+    "foodType": "Veg & Non-Veg",
+    "cuisineCategory": "Multi-Cuisine",
+    "specialtyTags": ["Mess + Evening Snacks", "South Indian Breakfast", "Budget Monthly Pass"],
+    "pricing": {
+      "dailyPlate": 90,
+      "dailyNonVeg": 130,
+      "monthlyPass1x": 1900,
+      "monthlyPass2x": 3600,
+      "sundayFeast": 100,
+      "delivery": "Same rate"
+    },
+    "timings": {
+      "lunch": "11:00 AM - 03:00 PM",
+      "dinner": "06:30 PM - 10:00 PM"
+    },
+    "sundayNightOpen": false,
+    "hygieneRating": 4.5,
+    "waterFacility": "Normal Filter Jar",
+    "seatingCapacity": 40,
+    "ownerSpecialty": "3-Day Non-Veg Schedule (Wed, Fri, Sun), South Indian Breakfast & Evening Snacks",
+    "studentHighlights": ["Snacks + Mess in one place", "Spacious 40+ seating hall", "Budget monthly pass at ₹1,900"],
+    "servingRule": "Unlimited Veg Thali",
+    "facilities": ["Handwash Basin", "Spacious 40-Seat Hall", "Daily Disinfection"],
+    "images": [
+      "https://images.unsplash.com/photo-1613292443284-8d10ef9383fe?w=800&auto=format&fit=crop&q=80"
+    ],
+    "surveyDetails": "Surveyed 19/08/2026 by Parth (PRN: 22235)"
+  },
+  {
+    "id": 14,
+    "name": "Madhura Mess",
+    "category": "Daily Mess",
+    "owner": "Mr. Pratik Anpat",
+    "contact": "+91 9765606448",
+    "address": "Just 170m from PICT Main Gate, Dhankawadi",
+    "distanceMeters": 170,
+    "lat": 18.4580,
+    "lng": 73.8510,
+    "foodType": "Veg & Non-Veg",
+    "cuisineCategory": "Maharashtrian",
+    "specialtyTags": ["Closest to PICT (170m)", "Cheapest 2-Time Pass (₹3,200)", "Daily Sweets"],
+    "pricing": {
+      "dailyPlate": 90,
+      "dailyNonVeg": 120,
+      "monthlyPass1x": 1800,
+      "monthlyPass2x": 3200,
+      "sundayFeast": 120,
+      "delivery": "Same rate"
+    },
+    "timings": {
+      "lunch": "12:00 PM - 03:30 PM",
+      "dinner": "07:00 PM - 10:30 PM"
+    },
+    "sundayNightOpen": false,
+    "hygieneRating": 4.6,
+    "waterFacility": "Normal Filter Jar",
+    "seatingCapacity": 20,
+    "ownerSpecialty": "Closest Mess to PICT (170m), Sunday Non-Veg, Wednesday Egg, Daily Veg Sweets",
+    "studentHighlights": ["Closest mess to campus (2 min walk)", "Lowest monthly 2-time pass (₹3,200/mo)", "Friendly staff"],
+    "servingRule": "Unlimited Phulkas & Sabzi",
+    "facilities": ["Handwash Basin", "Clean Dining Setup", "Daily Sanitation"],
+    "images": [
+      "https://images.unsplash.com/photo-1626777552726-4a6b54c97e46?w=800&auto=format&fit=crop&q=80"
+    ],
+    "surveyDetails": "Surveyed 19/08/2026 by Pawan (PRN: 22236)"
+  },
+  {
+    "id": 15,
+    "name": "PICT Campus Canteen & Mess",
+    "category": "Campus Canteen",
+    "owner": "College Canteen Vendor",
+    "contact": "Campus Intercom",
+    "address": "Inside PICT Campus Ground Floor, Dhankawadi, Pune",
+    "distanceMeters": 0,
+    "lat": 18.4575,
+    "lng": 73.8508,
+    "foodType": "Pure Veg",
+    "cuisineCategory": "Multi-Cuisine",
+    "specialtyTags": ["Zero Walking Distance", "Cheapest Daily Meal (₹60)", "Central RO Plant"],
+    "pricing": {
+      "dailyPlate": 60,
+      "monthlyPass1x": 1200,
+      "monthlyPass2x": 2400,
+      "sundayFeast": 80,
+      "delivery": "Campus Only"
+    },
+    "timings": {
+      "lunch": "12:00 PM - 03:00 PM",
+      "dinner": "Closed at night (Daytime snacks & lunch only)"
+    },
+    "sundayNightOpen": false,
+    "hygieneRating": 4.2,
+    "waterFacility": "Central College RO Water Plant",
+    "seatingCapacity": 120,
+    "ownerSpecialty": "Cheapest Daily Meal (₹60), Instant Campus Access, Central RO Water",
+    "studentHighlights": ["Zero walking needed", "Safe campus dining", "Snacks and lunch meals"],
+    "servingRule": "Standard Thali Plate",
+    "facilities": ["120+ Large Seating Area", "Central RO Water Plant", "Handwash Sinks", "CCTV Monitored"],
+    "images": [
+      "https://images.unsplash.com/photo-1546833999-b9f581a1996d?w=800&auto=format&fit=crop&q=80"
+    ],
+    "surveyDetails": "Campus Reference Standard (2026-27)"
+  }
+]
