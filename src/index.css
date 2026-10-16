@@ -1,0 +1,128 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: light;
+  --ink: #0f172a;
+  --muted: #64748b;
+  --line: #e2e8f0;
+  --paper: #ffffff;
+  --blue: #0077ff;
+  --orange: #ff7a00;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  overflow-x: hidden;
+  background: #ffffff;
+  color: var(--ink);
+  font-family: "Inter", sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+.font-display {
+  font-family: "Plus Jakarta Sans", sans-serif;
+}
+
+.hero-pastel {
+  background: linear-gradient(135deg, #e9e5f8 0%, #f1e6f7 52%, #f9e6f4 100%);
+}
+
+.cta-pastel {
+  background: linear-gradient(135deg, #dcd7f6 0%, #e7d9f4 50%, #f1dcf5 100%);
+}
+
+.floating-nav {
+  background: #ffffff;
+  border-radius: 1.15rem;
+  box-shadow: 0 10px 30px rgba(15, 23, 42, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.9);
+}
+
+.card {
+  background: #ffffff;
+  border: 1px solid #f1f5f9;
+  box-shadow: 0 10px 28px rgba(15, 23, 42, 0.05);
+}
+
+.mess-card {
+  transition: transform 0.22s ease, box-shadow 0.22s ease, border-color 0.22s ease;
+}
+
+.mess-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 18px 38px rgba(15, 23, 42, 0.09);
+  border-color: #dbeafe;
+}
+
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+
+.modal-backdrop {
+  background: rgba(15, 23, 42, 0.45);
+  backdrop-filter: blur(6px);
+}
+
+.toast {
+  animation: slideIn 0.25s ease both;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.rating-star {
+  transition: transform 0.15s ease, color 0.15s ease;
+}
+
+.rating-star:hover {
+  transform: scale(1.14);
+}
+
+.rating-star.active {
+  color: #ff7a00;
+}
+
+.compare-scroll {
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+}
+
+@media (max-width: 640px) {
+  .mess-card:hover {
+    transform: none;
+  }
+  .compare-tray {
+    bottom: max(1rem, env(safe-area-inset-bottom));
+  }
+  #compare-modal .compare-scroll {
+    max-height: 55vh;
+  }
+  #review-modal {
+    padding-bottom: max(0px, env(safe-area-inset-bottom));
+  }
+  #review-modal > div {
+    max-height: calc(100vh - env(safe-area-inset-top) - 1rem);
+  }
+}
