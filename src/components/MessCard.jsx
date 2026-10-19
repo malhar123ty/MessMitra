@@ -10,7 +10,10 @@ export default function MessCard({
   reviews = [],
 }) {
   const veg = mess.foodType === 'Pure Veg';
-  const rating = getAverageRating(mess, reviews).toFixed(1);
+  const hasReviews = reviews && reviews.length > 0;
+  const rating = hasReviews
+    ? (reviews.reduce((sum, r) => sum + (r.rating || 0), 0) / reviews.length).toFixed(1)
+    : null;
 
   return (
     <article className="mess-card card flex flex-col overflow-hidden rounded-2xl">
@@ -36,7 +39,13 @@ export default function MessCard({
           </div>
 
           <div className="pill shrink-0 bg-white/95 px-2.5 py-1 text-xs font-extrabold text-slate-900 shadow-sm backdrop-blur-sm">
-            <span className="text-brand-orange">★</span> {rating}
+            {hasReviews ? (
+              <>
+                <span className="text-brand-orange">★</span> {rating}
+              </>
+            ) : (
+              <span className="text-slate-400 font-bold text-[11px]">0 reviews</span>
+            )}
           </div>
         </div>
       </div>

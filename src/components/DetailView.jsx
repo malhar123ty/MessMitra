@@ -21,6 +21,7 @@ import {
   mapsDirections,
   getAverageRating,
 } from '../utils/helpers';
+import StarRating from './StarRating';
 
 export default function DetailView({
   mess,
@@ -29,8 +30,27 @@ export default function DetailView({
   onOpenReviewModal,
   reviews = [],
 }) {
-  const rating = getAverageRating(mess, reviews).toFixed(1);
+  const hasReviews = reviews && reviews.length > 0;
+  const rating = hasReviews
+    ? (reviews.reduce((sum, r) => sum + (r.rating || 0), 0) / reviews.length).toFixed(1)
+    : null;
   const verifiedReviewCount = reviews.filter((r) => r.verified).length;
+
+  const reviewsWithAttrs = reviews.filter(
+    (r) => r.taste || r.hygiene || r.gutComfort || r.valueForMoney
+  );
+  const avgTaste = reviewsWithAttrs.length
+    ? (reviewsWithAttrs.reduce((sum, r) => sum + (r.taste || r.rating || 0), 0) / reviewsWithAttrs.length).toFixed(1)
+    : rating;
+  const avgHygiene = reviewsWithAttrs.length
+    ? (reviewsWithAttrs.reduce((sum, r) => sum + (r.hygiene || r.rating || 0), 0) / reviewsWithAttrs.length).toFixed(1)
+    : rating;
+  const avgGut = reviewsWithAttrs.length
+    ? (reviewsWithAttrs.reduce((sum, r) => sum + (r.gutComfort || r.rating || 0), 0) / reviewsWithAttrs.length).toFixed(1)
+    : rating;
+  const avgValue = reviewsWithAttrs.length
+    ? (reviewsWithAttrs.reduce((sum, r) => sum + (r.valueForMoney || r.rating || 0), 0) / reviewsWithAttrs.length).toFixed(1)
+    : rating;
 
   const p = mess.pricing;
   const pricingRows = [
@@ -80,10 +100,20 @@ export default function DetailView({
                 </div>
                 <div>
                   <div className="font-display text-xl font-extrabold text-slate-900 sm:text-2xl">
-                    <span className="text-brand-orange">★</span> {rating}
+                    {hasReviews ? (
+                      <>
+                        <span className="text-brand-orange">★</span> {rating}
+                      </>
+                    ) : (
+                      <span className="text-slate-400 text-lg">0 reviews</span>
+                    )}
                   </div>
                   <div className="text-[11px] font-medium text-slate-400">
-                    {verifiedReviewCount ? `${verifiedReviewCount} verified reviews` : 'Hygiene score'}
+                    {hasReviews
+                      ? verifiedReviewCount
+                        ? `${verifiedReviewCount} verified reviews`
+                        : `${reviews.length} reviews`
+                      : 'No student ratings yet'}
                   </div>
                 </div>
                 <div>
@@ -322,10 +352,72 @@ export default function DetailView({
                     Student <span className="text-brand-blue">Reviews</span>
                   </h2>
                 </div>
-                <span className="rounded-xl bg-brand-orangeLight px-3 py-1.5 text-sm font-extrabold text-brand-orange">
-                  ★ {rating}
-                </span>
+                {hasReviews ? (
+                  <span className="rounded-xl bg-brand-orangeLight px-3 py-1.5 text-sm font-extrabold text-brand-orange">
+                    ★ {rating}
+                  </span>
+                ) : (
+                  <span className="rounded-xl bg-slate-100 px-3 py-1.5 text-xs font-bold text-slate-400">
+                    0 reviews
+                  </span>
+                )}
               </div>
+
+              {/* Average Ratings Box for Taste, Hygiene, Gut Comfort, Value */}
+              {hasReviews && (
+                <div className="mt-5 rounded-2xl border border-slate-100 bg-slate-50 p-4">
+                  <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-200/60 pb-3">
+                    <div>
+                      <p className="text-[11px] font-extrabold uppercase tracking-wider text-slate-500">
+                        Average Student Rating
+                      </p>
+                      <div className="mt-1 flex items-center gap-2">
+                        <StarRating rating={rating} size={16} />
+                        <span className="font-display text-lg font-black text-slate-900">
+                          {rating} <span className="text-xs font-normal text-slate-400">/ 5.0</span>
+                        </span>
+                      </div>
+                    </div>
+                    <span className="text-xs font-semibold text-slate-500">
+                      Based on {reviews.length} review{reviews.length > 1 ? 's' : ''}
+                    </span>
+                  </div>
+
+                  <div className="mt-3 grid grid-cols-2 gap-2.5 sm:grid-cols-4">
+                    <div className="rounded-xl bg-white p-2.5 shadow-sm border border-slate-100">
+                      <span className="text-[11px] font-bold text-slate-500">Taste</span>
+                      <div className="mt-1 flex items-center justify-between gap-1">
+                        <StarRating rating={avgTaste} size={11} />
+                        <span className="text-xs font-bold text-slate-800">{avgTaste}</span>
+                      </div>
+                    </div>
+
+                    <div className="rounded-xl bg-white p-2.5 shadow-sm border border-slate-100">
+                      <span className="text-[11px] font-bold text-slate-500">Hygiene</span>
+                      <div className="mt-1 flex items-center justify-between gap-1">
+                        <StarRating rating={avgHygiene} size={11} />
+                        <span className="text-xs font-bold text-slate-800">{avgHygiene}</span>
+                      </div>
+                    </div>
+
+                    <div className="rounded-xl bg-white p-2.5 shadow-sm border border-slate-100">
+                      <span className="text-[11px] font-bold text-slate-500">Gut Comfort</span>
+                      <div className="mt-1 flex items-center justify-between gap-1">
+                        <StarRating rating={avgGut} size={11} />
+                        <span className="text-xs font-bold text-slate-800">{avgGut}</span>
+                      </div>
+                    </div>
+
+                    <div className="rounded-xl bg-white p-2.5 shadow-sm border border-slate-100">
+                      <span className="text-[11px] font-bold text-slate-500">Value for Money</span>
+                      <div className="mt-1 flex items-center justify-between gap-1">
+                        <StarRating rating={avgValue} size={11} />
+                        <span className="text-xs font-bold text-slate-800">{avgValue}</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
 
               <div className="mt-5">
                 {reviews.length === 0 ? (
@@ -334,10 +426,10 @@ export default function DetailView({
                       <MessageCircle size={19} />
                     </div>
                     <p className="mt-3 text-sm font-bold text-slate-700">
-                      Be the first student to review this mess.
+                      0 reviews recorded yet.
                     </p>
                     <p className="mt-1 text-xs text-slate-500">
-                      Your practical notes help the next PICT student choose well.
+                      Be the first student to review this mess and guide others.
                     </p>
                   </div>
                 ) : (
@@ -348,31 +440,67 @@ export default function DetailView({
                       .map((r, i) => (
                         <article key={i} className="rounded-2xl border border-slate-200 bg-white p-4">
                           <div className="flex items-start justify-between gap-3">
-                            <div>
-                              <div className="flex flex-wrap items-center gap-2">
-                                <strong className="text-sm text-slate-900">{r.name}</strong>
-                                <span
-                                  className={`pill ${
-                                    r.verified
-                                      ? 'bg-brand-blueLight text-brand-blue'
-                                      : 'bg-slate-100 text-slate-500'
-                                  } px-2.5 py-0.5 text-[10px] font-extrabold`}
-                                >
-                                  {r.verified
-                                    ? '🎓 Verified PICT Student'
-                                    : '👤 Community Student Reviewer'}
-                                  {r.emailVerified ? ' · Email verified' : ''}
-                                </span>
+                            <div className="flex items-start gap-3">
+                              <div className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-slate-100 text-xs font-extrabold text-slate-700">
+                                {r.initials || (r.name ? r.name.slice(0, 2).toUpperCase() : 'ST')}
                               </div>
-                              <div className="mt-1 text-xs text-brand-orange">
-                                {'★'.repeat(r.rating)}
-                                {'☆'.repeat(5 - r.rating)}{' '}
-                                <span className="ml-1 text-slate-400">{r.label}</span>
+                              <div>
+                                <div className="flex flex-wrap items-center gap-2">
+                                  <strong className="text-sm text-slate-900">{r.name}</strong>
+                                  <span
+                                    className={`pill ${
+                                      r.verified
+                                        ? 'bg-brand-blueLight text-brand-blue'
+                                        : 'bg-slate-100 text-slate-500'
+                                    } px-2.5 py-0.5 text-[10px] font-extrabold`}
+                                  >
+                                    {r.verified
+                                      ? '🎓 Verified PICT Student'
+                                      : '👤 Community Student Reviewer'}
+                                    {r.emailVerified ? ' · Email verified' : ''}
+                                  </span>
+                                </div>
+                                <div className="mt-1 flex items-center gap-2">
+                                  <StarRating rating={r.rating} size={13} />
+                                  <span className="text-xs font-bold text-slate-800">
+                                    {r.avgRating ? r.avgRating.toFixed(1) : r.rating}
+                                  </span>
+                                  <span className="text-xs font-medium text-slate-400">· {r.label}</span>
+                                </div>
                               </div>
                             </div>
-                            <time className="text-[10px] font-semibold text-slate-400">{r.date}</time>
+                            <time className="text-[10px] font-semibold text-slate-400 shrink-0">{r.date}</time>
                           </div>
-                          <p className="mt-3 text-sm leading-6 text-slate-600">{r.text}</p>
+
+                          {/* 4 attributes shown with colored 5-star rating instead of 4/5 or 3/5 */}
+                          <div className="mt-3.5 grid grid-cols-2 gap-2 rounded-xl bg-slate-50 p-2.5 sm:grid-cols-4">
+                            <div>
+                              <div className="text-[10px] font-semibold text-slate-500">Taste</div>
+                              <StarRating rating={r.taste || r.rating} size={11} />
+                            </div>
+                            <div>
+                              <div className="text-[10px] font-semibold text-slate-500">Hygiene</div>
+                              <StarRating rating={r.hygiene || r.rating} size={11} />
+                            </div>
+                            <div>
+                              <div className="text-[10px] font-semibold text-slate-500">Gut Comfort</div>
+                              <StarRating rating={r.gutComfort || r.rating} size={11} />
+                            </div>
+                            <div>
+                              <div className="text-[10px] font-semibold text-slate-500">Value</div>
+                              <StarRating rating={r.valueForMoney || r.rating} size={11} />
+                            </div>
+                          </div>
+
+                          {/* User written comment if present */}
+                          {Boolean(
+                            (r.comment && r.comment.trim()) ||
+                            (r.text && !r.text.startsWith('Taste:') && r.text.trim())
+                          ) ? (
+                            <p className="mt-3 text-sm leading-6 text-slate-700 font-medium italic">
+                              "{r.comment ? r.comment.trim() : r.text.trim()}"
+                            </p>
+                          ) : null}
                         </article>
                       ))}
                   </div>

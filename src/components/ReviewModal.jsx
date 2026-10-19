@@ -48,13 +48,32 @@ export default function ReviewModal({ mess, onClose, onSubmitReview, showToast }
     const cleanEmail = normalizeEmail(email);
     const verified = /@pict\.edu$/i.test(cleanEmail) || cleanEmail.includes('pict');
 
+    const trimmedName = name.trim();
+    const initials = (() => {
+      const parts = trimmedName.split(/\s+/).filter(Boolean);
+      if (parts.length === 0) return 'ST';
+      if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase();
+      return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+    })();
+
+    const numRating = Number(rating);
     const newReview = {
-      name: name.trim(),
+      id: `local-${Date.now()}`,
+      messId: mess.id,
+      messName: mess.name,
+      name: trimmedName,
+      initials,
       email: cleanEmail,
       emailKey: cleanEmail,
       emailVerified: true,
-      rating: Number(rating),
-      label: ['', 'Not Recommended', 'Needs Improvement', 'Average', 'Must Try', 'Excellent'][rating],
+      rating: numRating,
+      avgRating: numRating,
+      taste: numRating,
+      hygiene: numRating,
+      gutComfort: numRating,
+      valueForMoney: numRating,
+      comment: text.trim(),
+      label: ['', 'Not Recommended', 'Needs Improvement', 'Average', 'Must Try', 'Excellent'][numRating] || 'Must Try',
       text: text.trim(),
       verified,
       date: new Intl.DateTimeFormat('en-IN', {
@@ -62,6 +81,7 @@ export default function ReviewModal({ mess, onClose, onSubmitReview, showToast }
         month: 'short',
         year: 'numeric',
       }).format(new Date()),
+      source: 'local',
     };
 
     onSubmitReview(mess.id, newReview);

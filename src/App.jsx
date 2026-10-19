@@ -132,11 +132,17 @@ export default function App() {
     } else if (sort === 'Lowest plate') {
       result.sort((a, b) => a.pricing.dailyPlate - b.pricing.dailyPlate);
     } else if (sort === 'Highest rated') {
-      result.sort(
-        (a, b) =>
-          getAverageRating(b, reviewsMap[b.id] || []) -
-          getAverageRating(a, reviewsMap[a.id] || [])
-      );
+      result.sort((a, b) => {
+        const aReviews = reviewsMap[a.id] || [];
+        const bReviews = reviewsMap[b.id] || [];
+        const aRating = aReviews.length
+          ? aReviews.reduce((sum, r) => sum + (r.rating || 0), 0) / aReviews.length
+          : 0;
+        const bRating = bReviews.length
+          ? bReviews.reduce((sum, r) => sum + (r.rating || 0), 0) / bReviews.length
+          : 0;
+        return bRating - aRating;
+      });
     }
     return result;
   }, [query, food, cuisine, sort, reviewsMap]);
@@ -319,7 +325,11 @@ export default function App() {
           </main>
 
           <WhyChooseUs />
-          <StudentVoices onSelectMess={handleSelectMess} />
+          <StudentVoices
+            onSelectMess={handleSelectMess}
+            reviewsMap={reviewsMap}
+            messesData={messesData}
+          />
           <BottomCta
             onOpenCompareModal={() => setIsCompareOpen(true)}
             onScrollToResults={scrollToResults}

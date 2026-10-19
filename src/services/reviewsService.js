@@ -81,6 +81,13 @@ export function transformSheetData(rows = [], messesList = []) {
     const date = formatDate(row['Timestamp']);
     const year = (row['Current Year of Study'] || '').trim();
 
+    const initials = (() => {
+      const parts = name.trim().split(/\s+/).filter(Boolean);
+      if (parts.length === 0) return 'ST';
+      if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase();
+      return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+    })();
+
     // Slot 1
     const m1 = findMessByName(row['Select Mess #1 to Review'], messesList);
     if (m1) {
@@ -94,42 +101,36 @@ export function transformSheetData(rows = [], messesList = []) {
       const attrs = [taste, hygiene, gut, vfm].filter((v) => v > 0);
       if (overall > 0 || attrs.length > 0 || comment) {
         let ratingNum = 0;
+        let avgScore = 0;
         if (overall > 0) {
+          avgScore = overall;
           ratingNum = Math.max(1, Math.min(5, Math.round(overall)));
         } else if (attrs.length > 0) {
-          ratingNum = Math.max(
-            1,
-            Math.min(5, Math.round(attrs.reduce((a, b) => a + b, 0) / attrs.length))
-          );
+          avgScore = attrs.reduce((a, b) => a + b, 0) / attrs.length;
+          ratingNum = Math.max(1, Math.min(5, Math.round(avgScore)));
         } else {
+          avgScore = 4;
           ratingNum = 4;
-        }
-
-        const attrTextParts = [];
-        if (taste) attrTextParts.push(`Taste: ${taste}/5`);
-        if (hygiene) attrTextParts.push(`Hygiene: ${hygiene}/5`);
-        if (gut) attrTextParts.push(`Gut Comfort: ${gut}/5`);
-        if (vfm) attrTextParts.push(`Value: ${vfm}/5`);
-        const attrSummary = attrTextParts.join(' · ');
-
-        let reviewText = '';
-        if (comment && attrSummary) {
-          reviewText = `${comment} (${attrSummary})`;
-        } else if (comment) {
-          reviewText = comment;
-        } else {
-          reviewText = attrSummary || 'Reviewed through PICT Student Survey';
         }
 
         result[m1.id].push({
           id: `sheet-${rowIndex}-1`,
+          messId: m1.id,
+          messName: m1.name,
           name,
+          initials,
           email,
           emailKey: email || `sheet-${rowIndex}-1`,
           emailVerified: true,
           rating: ratingNum,
+          avgRating: Number(avgScore.toFixed(1)),
           label: ratingLabels[ratingNum] || 'Good',
-          text: reviewText,
+          taste: taste || null,
+          hygiene: hygiene || null,
+          gutComfort: gut || null,
+          valueForMoney: vfm || null,
+          comment: comment || '',
+          text: comment || '',
           verified: isPict,
           date,
           yearOfStudy: year,
@@ -148,25 +149,27 @@ export function transformSheetData(rows = [], messesList = []) {
 
       const attrs = [taste, hygiene, gut, vfm].filter((v) => v > 0);
       if (attrs.length > 0) {
-        const ratingNum = Math.max(
-          1,
-          Math.min(5, Math.round(attrs.reduce((a, b) => a + b, 0) / attrs.length))
-        );
-        const attrTextParts = [];
-        if (taste) attrTextParts.push(`Taste: ${taste}/5`);
-        if (hygiene) attrTextParts.push(`Hygiene: ${hygiene}/5`);
-        if (gut) attrTextParts.push(`Gut Comfort: ${gut}/5`);
-        if (vfm) attrTextParts.push(`Value: ${vfm}/5`);
+        const avgScore = attrs.reduce((a, b) => a + b, 0) / attrs.length;
+        const ratingNum = Math.max(1, Math.min(5, Math.round(avgScore)));
 
         result[m2.id].push({
           id: `sheet-${rowIndex}-2`,
+          messId: m2.id,
+          messName: m2.name,
           name,
+          initials,
           email,
           emailKey: email || `sheet-${rowIndex}-2`,
           emailVerified: true,
           rating: ratingNum,
+          avgRating: Number(avgScore.toFixed(1)),
           label: ratingLabels[ratingNum] || 'Good',
-          text: attrTextParts.join(' · '),
+          taste: taste || null,
+          hygiene: hygiene || null,
+          gutComfort: gut || null,
+          valueForMoney: vfm || null,
+          comment: '',
+          text: '',
           verified: isPict,
           date,
           yearOfStudy: year,
