@@ -18,6 +18,8 @@ import {
   saveStoredReviews,
   getAverageRating,
 } from './utils/helpers';
+import initialReviewsData from './data/initialReviews.json';
+import { fetchSheetReviews, mergeReviews } from './services/reviewsService';
 
 export default function App() {
   const [query, setQuery] = useState('');
@@ -30,14 +32,41 @@ export default function App() {
   const [reviewModalMess, setReviewModalMess] = useState(null);
   const [toasts, setToasts] = useState([]);
 
-  // Store reviews in local component state synced with localStorage
+  // Store reviews in local component state synced with Google Sheets & localStorage
   const [reviewsMap, setReviewsMap] = useState(() => {
     const map = {};
     messesData.forEach((m) => {
-      map[m.id] = getStoredReviews(m.id);
+      const initialSheet = initialReviewsData[m.id] || [];
+      const local = getStoredReviews(m.id);
+      map[m.id] = mergeReviews(initialSheet, local);
     });
     return map;
   });
+
+  // Fetch live reviews from deployed Google Apps Script on mount
+  useEffect(() => {
+    let isMounted = true;
+    fetchSheetReviews(messesData)
+      .then((liveMap) => {
+        if (!isMounted || !liveMap) return;
+        setReviewsMap((prev) => {
+          const next = { ...prev };
+          messesData.forEach((m) => {
+            const sheetList = liveMap[m.id] || [];
+            const localList = getStoredReviews(m.id);
+            next[m.id] = mergeReviews(sheetList, localList);
+          });
+          return next;
+        });
+      })
+      .catch((err) => {
+        console.warn('Could not fetch live reviews from Google Apps Script:', err);
+      });
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   const showToast = (message, tone = 'dark') => {
     const id = Date.now() + Math.random();
@@ -146,10 +175,17 @@ export default function App() {
   };
 
   const handleReviewSubmit = (messId, review) => {
-    const currentReviews = reviewsMap[messId] || [];
-    const updated = [...currentReviews, review];
-    saveStoredReviews(messId, updated);
-    setReviewsMap((prev) => ({ ...prev, [messId]: updated }));
+    const currentLocal = getStoredReviews(messId);
+    const updatedLocal = [...currentLocal, review];
+    saveStoredReviews(messId, updatedLocal);
+
+    setReviewsMap((prev) => {
+      const currentMessReviews = prev[messId] || [];
+      return {
+        ...prev,
+        [messId]: mergeReviews(currentMessReviews, [review]),
+      };
+    });
   };
 
   const compareMesses = useMemo(() => {
@@ -320,6 +356,7 @@ export default function App() {
           compareMesses={compareMesses}
           onClose={() => setIsCompareOpen(false)}
           onRemoveFromCompare={removeCompare}
+          reviewsMap={reviewsMap}
         />
       )}
 

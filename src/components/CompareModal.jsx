@@ -11,6 +11,7 @@ export default function CompareModal({
   compareMesses,
   onClose,
   onRemoveFromCompare,
+  reviewsMap = {},
 }) {
   if (compareMesses.length < 2) return null;
 
@@ -18,7 +19,7 @@ export default function CompareModal({
     ['Food type', (m) => m.foodType],
     ['Cuisine', (m) => m.cuisineCategory],
     ['Distance', (m) => formatDistance(m.distanceMeters)],
-    ['Student rating', (m) => `★ ${getAverageRating(m).toFixed(1)}`],
+    ['Student rating', (m) => `★ ${getAverageRating(m, reviewsMap[m.id]).toFixed(1)}`],
     ['Single plate', (m) => formatMoney(m.pricing.dailyPlate)],
     ['Monthly · 1x', (m) => formatMoney(m.pricing.monthlyPass1x)],
     ['Monthly · 2x', (m) => formatMoney(m.pricing.monthlyPass2x)],

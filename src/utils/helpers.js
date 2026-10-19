@@ -1,3 +1,5 @@
+import initialReviewsData from '../data/initialReviews.json';
+
 // Helper utilities for MessMitra
 
 export const formatMoney = (value) => {
@@ -35,7 +37,12 @@ export const saveStoredReviews = (id, reviews) => {
 };
 
 export const getAverageRating = (mess, customReviews = []) => {
-  const reviews = customReviews.length ? customReviews : getStoredReviews(mess.id);
+  let reviews = customReviews;
+  if (!reviews || !reviews.length) {
+    const stored = getStoredReviews(mess.id);
+    const initial = initialReviewsData?.[mess.id] || [];
+    reviews = stored.length ? stored : initial;
+  }
   if (!reviews.length) return mess.hygieneRating;
   return reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length;
 };
