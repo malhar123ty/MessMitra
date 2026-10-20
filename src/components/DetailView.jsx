@@ -121,7 +121,11 @@ export default function DetailView({
                     {formatDistance(mess.distanceMeters)}
                   </div>
                   <div className="text-[11px] font-medium text-slate-400">
-                    {mess.seatingCapacity} seats inside
+                    {String(mess.seatingCapacity).toLowerCase().includes('seat')
+                      ? (String(mess.seatingCapacity).toLowerCase().includes('inside')
+                          ? mess.seatingCapacity
+                          : `${mess.seatingCapacity} inside`)
+                      : `${mess.seatingCapacity} seats inside`}
                   </div>
                 </div>
               </div>

@@ -1,5 +1,5 @@
 import React, { useRef, useEffect } from 'react';
-import { Navigation } from 'lucide-react';
+import { Navigation, ChevronDown } from 'lucide-react';
 
 export default function Hero({
   query,
@@ -44,11 +44,7 @@ export default function Hero({
         <div className="grid items-center gap-12 lg:grid-cols-[1.08fr_0.92fr]">
           {/* Left column */}
           <div>
-            <div className="inline-flex items-center gap-2 rounded-full bg-[#dbeafe] px-4 py-1.5 text-xs font-semibold text-brand-blue">
-              <span className="text-brand-orange">★</span> Audited by PICT Students · 2026–27
-            </div>
-
-            <h1 className="font-display mt-6 text-5xl font-extrabold leading-[1.08] tracking-tight text-slate-900 sm:text-6xl">
+            <h1 className="font-display text-5xl font-extrabold leading-[1.08] tracking-tight text-slate-900 sm:text-6xl">
               Discover Your<br />
               <span className="text-brand-blue">Everyday Mess</span>
             </h1>
@@ -73,42 +69,58 @@ export default function Hero({
                   />
                 </label>
 
-                <label className="block border-b border-slate-100 pb-2.5 sm:border-b-0 lg:border-r lg:pb-0 lg:pr-3">
-                  <span className="block text-[11px] font-medium text-slate-400">Food type</span>
-                  <select
-                    id="food-filter"
-                    value={food}
-                    onChange={(e) => {
-                      setFood(e.target.value);
-                      onScrollToResults();
-                    }}
-                    className="mt-0.5 w-full bg-transparent text-sm font-semibold text-slate-800 outline-none"
-                  >
-                    {['All food', 'Pure Veg', 'Veg & Non-Veg'].map((opt) => (
-                      <option key={opt} value={opt}>
-                        {opt}
-                      </option>
-                    ))}
-                  </select>
+                <label className="group relative block border-b border-slate-100 pb-2.5 sm:border-b-0 lg:border-r lg:pb-0 lg:pr-3 cursor-pointer">
+                  <span className="block text-[11px] font-medium text-slate-400 transition-colors group-hover:text-slate-600">
+                    Food type
+                  </span>
+                  <div className="relative mt-0.5 flex items-center">
+                    <select
+                      id="food-filter"
+                      value={food}
+                      onChange={(e) => {
+                        setFood(e.target.value);
+                        onScrollToResults();
+                      }}
+                      className="w-full appearance-none border-0 border-none bg-transparent pr-7 text-sm font-semibold text-slate-800 outline-none focus:outline-none focus:ring-0 cursor-pointer"
+                    >
+                      {['All food', 'Pure Veg', 'Veg & Non-Veg'].map((opt) => (
+                        <option key={opt} value={opt} className="bg-white text-slate-800 py-1 font-medium">
+                          {opt}
+                        </option>
+                      ))}
+                    </select>
+                    <ChevronDown
+                      size={14}
+                      className="pointer-events-none absolute right-1 text-slate-400 transition-colors group-hover:text-slate-600"
+                    />
+                  </div>
                 </label>
 
-                <label className="block pb-1 sm:pb-0 lg:pr-2">
-                  <span className="block text-[11px] font-medium text-slate-400">Cuisine</span>
-                  <select
-                    id="cuisine-filter"
-                    value={cuisine}
-                    onChange={(e) => {
-                      setCuisine(e.target.value);
-                      onScrollToResults();
-                    }}
-                    className="mt-0.5 w-full bg-transparent text-sm font-semibold text-slate-800 outline-none"
-                  >
-                    {cuisinesList.map((c) => (
-                      <option key={c} value={c}>
-                        {c}
-                      </option>
-                    ))}
-                  </select>
+                <label className="group relative block pb-1 sm:pb-0 lg:pr-2 cursor-pointer">
+                  <span className="block text-[11px] font-medium text-slate-400 transition-colors group-hover:text-slate-600">
+                    Cuisine
+                  </span>
+                  <div className="relative mt-0.5 flex items-center">
+                    <select
+                      id="cuisine-filter"
+                      value={cuisine}
+                      onChange={(e) => {
+                        setCuisine(e.target.value);
+                        onScrollToResults();
+                      }}
+                      className="w-full appearance-none border-0 border-none bg-transparent pr-7 text-sm font-semibold text-slate-800 outline-none focus:outline-none focus:ring-0 cursor-pointer"
+                    >
+                      {cuisinesList.map((c) => (
+                        <option key={c} value={c} className="bg-white text-slate-800 py-1 font-medium">
+                          {c}
+                        </option>
+                      ))}
+                    </select>
+                    <ChevronDown
+                      size={14}
+                      className="pointer-events-none absolute right-1 text-slate-400 transition-colors group-hover:text-slate-600"
+                    />
+                  </div>
                 </label>
 
                 <button

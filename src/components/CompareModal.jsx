@@ -28,7 +28,7 @@ export default function CompareModal({
     ['Dinner', (m) => m.timings.dinner],
     ['Sunday night', (m) => (m.sundayNightOpen ? 'Open' : 'Closed')],
     ['Water', (m) => m.waterFacility],
-    ['Seating', (m) => `${m.seatingCapacity} seats`],
+    ['Seating', (m) => String(m.seatingCapacity).toLowerCase().includes('seat') ? m.seatingCapacity : `${m.seatingCapacity} seats`],
     ['Delivery', (m) => m.pricing.delivery || 'Ask at counter'],
   ];
 
