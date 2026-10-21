@@ -15,8 +15,45 @@ export const formatDistance = (meters) => {
 export const mapsSearch = (mess) =>
   `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${mess.name}, ${mess.address}`)}`;
 
-export const mapsDirections = (mess) =>
-  `https://www.google.com/maps/dir/?api=1&destination=${mess.lat},${mess.lng}&travelmode=walking`;
+/**
+ * Safely extracts and validates numeric geographic coordinates from a mess object.
+ * Returns { lat, lng } if both coordinates are valid finite numbers within geographical bounds, or null.
+ */
+export const getMessCoordinates = (mess) => {
+  if (!mess || typeof mess !== 'object') return null;
+
+  const rawLat = mess.lat ?? mess.latitude ?? mess.location?.latitude;
+  const rawLng = mess.lng ?? mess.longitude ?? mess.location?.longitude;
+
+  if (rawLat == null || rawLng == null || rawLat === '' || rawLng === '') {
+    return null;
+  }
+
+  const lat = Number(rawLat);
+  const lng = Number(rawLng);
+
+  if (!Number.isFinite(lat) || !Number.isFinite(lng)) {
+    return null;
+  }
+
+  // Latitude must be between -90 and 90 degrees
+  if (lat < -90 || lat > 90) {
+    return null;
+  }
+
+  // Longitude must be between -180 and 180 degrees
+  if (lng < -180 || lng > 180) {
+    return null;
+  }
+
+  return { lat, lng };
+};
+
+export const mapsDirections = (mess) => {
+  const coords = getMessCoordinates(mess);
+  if (!coords) return null;
+  return `https://www.google.com/maps/dir/?api=1&destination=${coords.lat},${coords.lng}&travelmode=walking`;
+};
 
 export const getReviewsStorageKey = (id) => `messmitra-reviews-${id}`;
 

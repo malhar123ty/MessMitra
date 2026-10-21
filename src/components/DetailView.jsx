@@ -64,6 +64,8 @@ export default function DetailView({
     ['Sunday feast', p.sundayFeast],
   ].filter(([, v]) => v != null);
 
+  const directionsUrl = mapsDirections(mess);
+
   return (
     <div className="min-h-screen bg-[#f8fafc]">
       <div className="hero-pastel pb-12 pt-4 sm:pb-16 sm:pt-6">
@@ -138,10 +140,27 @@ export default function DetailView({
                   <Phone size={16} /> Call {mess.owner.split(' ').slice(0, 2).join(' ')}
                 </a>
                 <a
-                  href={mapsDirections(mess)}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 rounded-xl bg-brand-blue px-5 py-3 text-sm font-bold text-white shadow-sm transition hover:bg-brand-blueHover"
+                  href={directionsUrl || '#'}
+                  target={directionsUrl ? '_blank' : undefined}
+                  rel={directionsUrl ? 'noopener noreferrer' : undefined}
+                  onClick={(e) => {
+                    if (!directionsUrl) {
+                      e.preventDefault();
+                      alert(
+                        'Verified coordinates are currently unavailable for this mess. Please refer to the address below or contact the mess owner.'
+                      );
+                    }
+                  }}
+                  className={`inline-flex items-center gap-2 rounded-xl px-5 py-3 text-sm font-bold shadow-sm transition ${
+                    directionsUrl
+                      ? 'bg-brand-blue text-white hover:bg-brand-blueHover'
+                      : 'cursor-not-allowed bg-slate-300 text-slate-500'
+                  }`}
+                  title={
+                    directionsUrl
+                      ? 'Open walking directions in Google Maps'
+                      : 'Walking directions unavailable: coordinates missing'
+                  }
                 >
                   <Navigation size={16} /> Walking directions
                 </a>

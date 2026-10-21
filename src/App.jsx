@@ -94,6 +94,7 @@ export default function App() {
   }, []);
 
   const handleSelectMess = (id) => {
+    setSelectedMessId(Number(id));
     window.location.hash = `mess-${id}`;
   };
 
