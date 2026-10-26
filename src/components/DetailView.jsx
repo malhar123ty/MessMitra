@@ -480,7 +480,7 @@ export default function DetailView({
                                     {r.verified
                                       ? '🎓 Verified PICT Student'
                                       : '👤 Community Student Reviewer'}
-                                    {r.emailVerified ? ' · Email verified' : ''}
+                                    
                                   </span>
                                 </div>
                                 <div className="mt-1 flex items-center gap-2">

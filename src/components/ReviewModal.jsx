@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { X, Send, BadgeCheck, MailCheck } from 'lucide-react';
+import { X, Send } from 'lucide-react';
 
 const ratingLabels = [
   '',
@@ -15,33 +15,17 @@ export default function ReviewModal({ mess, onClose, onSubmitReview, showToast }
   const [email, setEmail] = useState('');
   const [rating, setRating] = useState(5);
   const [text, setText] = useState('');
-  const [otpStep, setOtpStep] = useState(false);
-  const [generatedOtp, setGeneratedOtp] = useState('');
-  const [enteredOtp, setEnteredOtp] = useState('');
 
   const normalizeEmail = (str) => String(str || '').trim().toLowerCase();
 
-  const handleSendOtp = (e) => {
+  const handlePublish = (e) => {
     e.preventDefault();
     if (!name.trim() || !email.trim()) {
       showToast('Please fill in your name and email address.', 'dark');
       return;
     }
-    const cleanEmail = normalizeEmail(email);
-    const code = String(Math.floor(100000 + Math.random() * 900000));
-    setGeneratedOtp(code);
-    setOtpStep(true);
-    showToast(`Browser preview OTP generated: ${code}`, 'green');
-  };
-
-  const handlePublish = (e) => {
-    e.preventDefault();
-    if (!enteredOtp.trim()) {
-      showToast('Please enter the 6-digit OTP.', 'dark');
-      return;
-    }
-    if (enteredOtp.trim() !== generatedOtp) {
-      showToast('That OTP is incorrect. Check the code and try again.', 'dark');
+    if (!text.trim()) {
+      showToast('Please write a brief review before publishing.', 'dark');
       return;
     }
 
@@ -87,8 +71,8 @@ export default function ReviewModal({ mess, onClose, onSubmitReview, showToast }
     onSubmitReview(mess.id, newReview);
     showToast(
       verified
-        ? 'Email verified. Review published with PICT badge.'
-        : 'Email verified. Review published as a community reviewer.',
+        ? 'Review published with PICT student badge!'
+        : 'Review published successfully!',
       'green'
     );
     onClose();
@@ -103,13 +87,13 @@ export default function ReviewModal({ mess, onClose, onSubmitReview, showToast }
         <div className="flex items-start justify-between gap-4">
           <div>
             <p className="text-xs font-bold uppercase tracking-wider text-brand-orange">
-              VERIFIED LOCAL REVIEW
+              STUDENT REVIEW
             </p>
             <h2 className="font-display mt-1 text-2xl font-extrabold text-slate-900 sm:text-3xl">
               How was <span className="text-brand-blue">{mess.name}</span>?
             </h2>
             <p className="mt-1.5 text-sm text-slate-500">
-              Verify your email first. Each email can rate this mess only once.
+              Share your genuine dining experience to help fellow students.
             </p>
           </div>
           <button
@@ -120,7 +104,7 @@ export default function ReviewModal({ mess, onClose, onSubmitReview, showToast }
           </button>
         </div>
 
-        <form onSubmit={otpStep ? handlePublish : handleSendOtp} className="mt-6 space-y-4">
+        <form onSubmit={handlePublish} className="mt-6 space-y-4">
           <label className="block">
             <span className="mb-1.5 block text-xs font-bold uppercase tracking-wider text-slate-500">
               Full name
@@ -143,41 +127,12 @@ export default function ReviewModal({ mess, onClose, onSubmitReview, showToast }
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              disabled={otpStep}
               required
               maxLength={120}
               placeholder="you@pict.edu or personal email"
-              className="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm outline-none transition focus:border-brand-blue focus:ring-4 focus:ring-brand-blue/10 disabled:bg-slate-50"
+              className="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm outline-none transition focus:border-brand-blue focus:ring-4 focus:ring-brand-blue/10"
             />
           </label>
-
-          {otpStep && (
-            <div className="rounded-2xl border border-orange-200 bg-brand-orangeLight p-4">
-              <div className="flex items-start gap-3">
-                <div className="text-brand-orange">
-                  <MailCheck size={19} />
-                </div>
-                <div className="min-w-0 flex-1">
-                  <p className="text-sm font-extrabold text-slate-900">
-                    Enter your one-time password
-                  </p>
-                  <p className="mt-1 text-xs leading-5 text-slate-700">
-                    Browser preview OTP:{' '}
-                    <strong className="tracking-[.2em] text-brand-orange">{generatedOtp}</strong>
-                  </p>
-                  <input
-                    value={enteredOtp}
-                    onChange={(e) => setEnteredOtp(e.target.value)}
-                    inputMode="numeric"
-                    pattern="[0-9]{6}"
-                    maxLength={6}
-                    placeholder="6-digit OTP"
-                    className="mt-3 w-full rounded-xl border border-orange-200 bg-white px-4 py-3 text-sm font-bold tracking-[.35em] outline-none focus:border-brand-orange"
-                  />
-                </div>
-              </div>
-            </div>
-          )}
 
           <div>
             <span className="mb-1.5 block text-xs font-bold uppercase tracking-wider text-slate-500">
@@ -217,21 +172,12 @@ export default function ReviewModal({ mess, onClose, onSubmitReview, showToast }
             />
           </label>
 
-          {!otpStep ? (
-            <button
-              type="submit"
-              className="flex w-full items-center justify-center gap-2 rounded-xl bg-brand-blue px-4 py-3.5 text-sm font-bold text-white shadow-sm transition hover:bg-brand-blueHover"
-            >
-              <Send size={16} /> Send OTP to verify email
-            </button>
-          ) : (
-            <button
-              type="submit"
-              className="flex w-full items-center justify-center gap-2 rounded-xl bg-brand-orange px-4 py-3.5 text-sm font-bold text-white shadow-sm transition hover:bg-brand-orangeHover"
-            >
-              <BadgeCheck size={16} /> Verify OTP & publish review
-            </button>
-          )}
+          <button
+            type="submit"
+            className="flex w-full items-center justify-center gap-2 rounded-xl bg-brand-orange px-4 py-3.5 text-sm font-bold text-white shadow-sm transition hover:bg-brand-orangeHover"
+          >
+            <Send size={16} /> Publish Review
+          </button>
         </form>
       </div>
     </div>
