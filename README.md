@@ -52,17 +52,17 @@ Every listing is backed by an in-person campus survey auditing real plate prices
 | # | Mess Name | Type | Cuisine | Distance | Single Plate | Sunday Night |
 |---|---|---|---|---|---|:---:|
 | 1 | **Kirteshwar Khanawal** | Veg & Non-Veg | Maharashtrian | 250m | ₹80 | ✅ Open |
-| 2 | **Deep's Kitchen** | Veg & Non-Veg | Maharashtrian | 250m | ₹80 | ✅ Open |
+| 2 | **Deep's Kitchen** | Veg & Non-Veg | Maharashtrian | 250m | ₹80 | ❌ Closed |
 | 3 | **Aai Mess** | Pure Veg | Maharashtrian | 250m | ₹80 | ❌ Closed |
-| 4 | **Kashi Vishweshwar Mess** | Veg & Non-Veg | Maharashtrian | 250m | ₹80 | ✅ Open |
+| 4 | **Kashi Vishweshwar Mess** | Veg & Non-Veg | Maharashtrian | 250m | ₹80 | ❌ Closed |
 | 5 | **Hotel Abhiruchi** | Veg & Non-Veg | Multi-Cuisine | 500m | ₹90 | ✅ Open |
 | 6 | **Jay Shankar Mess** | Veg & Non-Veg | Maharashtrian | 300m | ₹80 | ❌ Closed |
-| 7 | **SK Dining (Santosh Mess)** | Pure Veg | North Indian | 260m | ₹90 | ✅ Open |
+| 7 | **SK Dining (Santosh Mess)** | Pure Veg | North Indian | 260m | ₹90 | ❌ Closed |
 | 8 | **Sadguru Mess** | Pure Veg | North Indian | 250m | ₹80 | ✅ Open |
-| 9 | **Sujata Mess** | Veg & Non-Veg | Maharashtrian | 250m | ₹100 | ✅ Open |
-| 10 | **Hotel Maitri Katta** | Veg & Non-Veg | Multi-Cuisine | 500m | ₹90 | ✅ Open |
-| 11 | **Kokan Katta** | Veg & Non-Veg | Kokani Coastal | 300m | ₹100 | ✅ Open |
-| 12 | **Shankar Maharaj Mess** | Veg & Non-Veg | Maharashtrian | 350m | ₹100 | ✅ Open |
+| 9 | **Sujata Mess** | Veg & Non-Veg | Maharashtrian | 250m | ₹100 | ❌ Closed |
+| 10 | **Hotel Maitri Katta** | Veg & Non-Veg | Multi-Cuisine | 500m | ₹90 | ❌ Closed |
+| 11 | **Kokan Katta** | Veg & Non-Veg | Kokani Coastal | 300m | ₹100 | ❌ Closed|
+| 12 | **Shankar Maharaj Mess** | Veg & Non-Veg | Maharashtrian | 350m | ₹100 | ❌ Closed |
 | 13 | **Annapurna Dining Centre** | Veg & Non-Veg | Multi-Cuisine | 850m | ₹90 | ❌ Closed |
 | 14 | **Madhura Mess** | Veg & Non-Veg | Maharashtrian | 170m | ₹90 | ❌ Closed |
 | 15 | **PICT Campus Canteen & Mess** | Pure Veg | Multi-Cuisine | 0m (Campus) | ₹80 | ❌ Closed |
