@@ -39,7 +39,7 @@ Every listing is backed by an in-person campus survey auditing real plate prices
   * 🌿 **Gut Comfort & Digestion**
   * 💰 **Value for Money**
 * **PICT Student Verification:** Automatic detection of `@pict.edu` email IDs to award the **🎓 Verified PICT Student** badge.
-* **OTP Verification Workflow:** In-modal email OTP verification to maintain honest, community-driven ratings.
+* **Instant Submission Workflow:** Streamlined, zero-friction review posting with immediate local-first synchronization and persistent storage.
 * **Live Google Sheets Integration:** Fetches live student survey responses through a deployed Google Apps Script web service, merged with local browser caching.
 
 ### 🎙️ 5. "Student Voices" Review Carousel
@@ -61,11 +61,151 @@ Every listing is backed by an in-person campus survey auditing real plate prices
 | 8 | **Sadguru Mess** | Pure Veg | North Indian | 250m | ₹80 | ✅ Open |
 | 9 | **Sujata Mess** | Veg & Non-Veg | Maharashtrian | 250m | ₹100 | ❌ Closed |
 | 10 | **Hotel Maitri Katta** | Veg & Non-Veg | Multi-Cuisine | 500m | ₹90 | ❌ Closed |
-| 11 | **Kokan Katta** | Veg & Non-Veg | Kokani Coastal | 300m | ₹100 | ❌ Closed|
+| 11 | **Kokan Katta** | Veg & Non-Veg | Kokani Coastal | 300m | ₹100 | ❌ Closed |
 | 12 | **Shankar Maharaj Mess** | Veg & Non-Veg | Maharashtrian | 350m | ₹100 | ❌ Closed |
 | 13 | **Annapurna Dining Centre** | Veg & Non-Veg | Multi-Cuisine | 850m | ₹90 | ❌ Closed |
 | 14 | **Madhura Mess** | Veg & Non-Veg | Maharashtrian | 170m | ₹90 | ❌ Closed |
 | 15 | **PICT Campus Canteen & Mess** | Pure Veg | Multi-Cuisine | 0m (Campus) | ₹80 | ❌ Closed |
+
+---
+
+## 🏗️ System & Project Architecture
+
+MessMitra is architected as a **Client-Side Single-Page Application (SPA)** with a **hybrid local-first data pipeline** backed by serverless cloud integrations. This ensures instant page loads, offline resiliency, deep linkability, and real-time community data synchronization without requiring a paid server backend.
+
+### 📐 High-Level Architecture Diagram
+
+```mermaid
+graph TD
+    subgraph Client ["Client Tier (React 18 SPA + Vite)"]
+        subgraph UI ["Presentation Components"]
+            Navbar["Navbar & Global Controls"]
+            Hero["Hero (Search, Dietary & Cuisine Filters)"]
+            MessGrid["Messes Grid (MessCard)"]
+            Detail["DetailView (#mess-:id)"]
+            CompareTray["CompareTray (Floating Shortlist)"]
+            CompareModal["CompareModal (14-Param Matrix)"]
+            ReviewModal["ReviewModal (Student Review Posting)"]
+            Voices["StudentVoices (Touch Testimonial Carousel)"]
+        end
+
+        subgraph State ["State & Routing Orchestrator (App.jsx)"]
+            AppState["Reactive App State (useState / useMemo)"]
+            HashRouter["Native Hash Router (#mess-:id)"]
+            FilterEngine["Multi-Attribute Filtering & Sorting"]
+            LocalStorage["Client Persistence (localStorage)"]
+        end
+
+        subgraph Services ["Data & Utility Services"]
+            RevService["reviewsService.js (Fetch, Transform, Deduplicate)"]
+            Helpers["helpers.js (Geo Coordinates & Formatters)"]
+            StaticMesses["messesData.json (15 Audited Messes)"]
+            StaticReviews["initialReviews.json (Baseline Reviews)"]
+        end
+    end
+
+    subgraph Backend ["Serverless Data Pipeline"]
+        GForm["Google Forms (Student Survey Submissions)"]
+        GSheet["Google Sheets (Survey Response Database)"]
+        GAS["Google Apps Script Web App Endpoint (/exec)"]
+    end
+
+    subgraph External ["External Services"]
+        GMaps["Google Maps (Walking Route Directions)"]
+        Tel["Native Telephony (tel: Call Action)"]
+    end
+
+    %% Data Ingestion Pipeline
+    GForm -->|"Student Submissions"| GSheet
+    GSheet -->|"Spreadsheet Rows"| GAS
+    GAS -->|"Live REST JSON API"| RevService
+    StaticMesses -->|"Static Specifications"| AppState
+    StaticReviews -->|"Baseline Seed Data"| RevService
+    RevService -->|"Normalized & Merged Reviews"| AppState
+    LocalStorage <-->|"Offline Cache & Local Reviews"| AppState
+
+    %% UI and State Interactions
+    AppState --> FilterEngine
+    FilterEngine --> MessGrid
+    AppState --> Detail
+    AppState --> CompareTray
+    AppState --> Voices
+    Hero -->|"Query & Filter Changes"| AppState
+    Navbar -->|"Navigation & Compare Toggle"| AppState
+    HashRouter <-->|"Bi-directional Hash Sync"| Detail
+    ReviewModal -->|"Save User Review"| LocalStorage
+    ReviewModal -->|"Optimistic State Update"| AppState
+
+    %% External Outbound Integrations
+    Detail -->|"Directions from PICT Gate"| GMaps
+    Detail -->|"One-Tap Direct Dial"| Tel
+    MessGrid -->|"One-Tap Direct Dial"| Tel
+```
+
+---
+
+### 🧩 Architectural Layers & Components
+
+#### 1. Presentation & UI Layer (React 18 & Tailwind CSS)
+* **`App.jsx` (Root Orchestrator):** Manages central state for search queries, dietary preferences, active cuisine selections, sort orders, shortlisted comparison IDs, toast notifications, and aggregated reviews.
+* **`Navbar.jsx`:** Sticky navigation header featuring brand iconography, dynamic compare counter pill badge, quick navigation triggers, and context-sensitive views (Home vs. Detail).
+* **`Hero.jsx`:** Interactive hero banner offering instantaneous keyword search, one-click dietary filter pills (**Pure Veg** vs. **Veg & Non-Veg**), cuisine dropdown selector, and dynamic directory counters.
+* **`MessCard.jsx`:** Responsive directory card displaying distance badges, starting plate prices, Sunday night indicators, cuisine tags, comparison selection checkboxes, and detail view triggers.
+* **`DetailView.jsx`:** Comprehensive profile view rendered via hash routing (`#mess-:id`). Contains full price breakdowns (daily plates, 1x/2x monthly passes, delivery), operational timings, certified water audit, seating capacity, weekly schedule, Google Maps walking navigation, direct phone calling, and review feeds.
+* **`CompareTray.jsx` & `CompareModal.jsx`:** Bottom-docked tray tracking up to 3 selected messes and opening a full-screen 14-parameter side-by-side comparison matrix.
+* **`ReviewModal.jsx`:** Review submission dialog with star ratings, 4-attribute evaluation, feedback text, student email capture, and client-side `@pict.edu` domain verification.
+* **`StudentVoices.jsx`:** Touch-enabled, auto-scrolling horizontal review carousel spotlighting authentic feedback from verified PICT students.
+* **`Toast.jsx` & `StarRating.jsx`:** Modular UI components for non-intrusive notification feedback and accessible SVG star ratings.
+
+---
+
+#### 2. Hybrid 3-Tier Data Pipeline & Review Aggregation
+To achieve lightning-fast initial load times while supporting real-time community updates, MessMitra uses a **three-tier data synchronization architecture**:
+
+```text
+┌────────────────────────────────────────────────────────────────────────┐
+│                        3-Tier Review Pipeline                          │
+├────────────────────────────────┬───────────────────────────────────────┤
+│ Tier 1: Bundled Baseline Data  │ • initialReviews.json loaded on boot  │
+│                                │ • Guarantees 0ms initial render       │
+├────────────────────────────────┼───────────────────────────────────────┤
+│ Tier 2: Local-First Storage    │ • localStorage ('messmitra-reviews-X')│
+│                                │ • Persists locally submitted reviews  │
+│                                │ • Caches latest Google Sheets response│
+├────────────────────────────────┼───────────────────────────────────────┤
+│ Tier 3: Asynchronous Live Sync │ • Google Apps Script Web App (/exec)  │
+│                                │ • 12-second AbortController timeout   │
+│                                │ • Normalizes multi-attribute survey   │
+│                                │ • Deduplicates via emailKey & IDs     │
+└────────────────────────────────┴───────────────────────────────────────┘
+```
+
+1. **Instant First Paint:** On initial mount, `App.jsx` combines pre-bundled baseline reviews (`initialReviews.json`) with locally persisted reviews (`localStorage`).
+2. **Background Live Synchronization:** `fetchSheetReviews()` asynchronously queries the Google Apps Script REST endpoint (`AKfycbx4A60409.../exec`) with an `AbortController` timeout (12s).
+3. **Data Normalization (`transformSheetData`):** Parses raw rows from Google Form responses, matches mess names via fuzzy matching (`findMessByName`), parses multi-attribute metrics (Taste, Hygiene, Gut Comfort, Value for Money), computes composite rating scores, and extracts user initials.
+4. **Deduplication Engine (`mergeReviews`):** Merges remote sheet responses with local user reviews, eliminating duplicates using composite keys (`emailKey` || `id` || `name-date`).
+
+---
+
+#### 3. Client-Side Hash Routing Architecture
+* **Zero-Configuration Routing:** Uses browser `window.location.hash` (`#mess-:id`) instead of standard browser history push-states.
+* **Deep Linking:** Students can share direct URLs to specific mess profiles (e.g., `https://messmitra.vercel.app/#mess-1`).
+* **Static Hosting Friendly:** Operates seamlessly on any static CDN (Vercel, GitHub Pages) without requiring server-side rewrite rules (`_redirects` or `rewrites`).
+* **History Navigation & Scroll Management:** Synchronizes browser Back/Forward navigation with state transitions and automatically resets scroll positions to the top.
+
+---
+
+#### 4. Geolocation & External Integration Architecture
+* **Strict Coordinate Validation (`getMessCoordinates` in `helpers.js`):** Validates that mess coordinates are finite numbers within valid geographic bounds (latitude $[-90^\circ, 90^\circ]$, longitude $[-180^\circ, 180^\circ]$).
+* **Walking Directions Engine (`mapsDirections`):** Generates universal Google Maps walking navigation URLs originating from the **PICT Pune Main Gate** (`18.4575° N, 73.8508° E`).
+* **Direct Telephony Integration (`tel:`):** Formats verified phone numbers for direct one-tap dialing on mobile devices.
+
+---
+
+#### 5. Security, Validation & Reliability
+* **PICT Student Verification:** Client-side regex verification ensures that reviewers with `@pict.edu` email addresses are awarded the official **🎓 Verified PICT Student** trust badge.
+* **Fault-Tolerant Network Fallbacks:** If the Google Apps Script endpoint experiences rate limits, network outages, or ad-blocker interference, the application gracefully falls back to `messmitra-sheet-cache` and bundled JSON without crashing.
+* **XSS Defense:** Strict React JSX escaping prevents cross-site scripting from user-submitted reviews and Google Sheet comment fields.
 
 ---
 
@@ -77,6 +217,7 @@ Every listing is backed by an in-person campus survey auditing real plate prices
 * **Icons:** [Lucide React](https://lucide.dev/)
 * **Typography:** Plus Jakarta Sans & Inter
 * **Backend / Data Sync:** Google Apps Script Web App REST API connected to Google Sheets + client-side `localStorage` sync
+* **Hosting:** Optimized for static deployments (Vercel, Cloudflare Pages, Netlify)
 
 ---
 
@@ -84,39 +225,41 @@ Every listing is backed by an in-person campus survey auditing real plate prices
 
 ```text
 MessMitra/
-├── public/                 # Static assets & brand logos
-│   ├── logo-full.png
-│   ├── logo-horizontal.png
-│   ├── logo-icon.png
-│   └── logo-symbol.png
+├── public/                     # Static assets & brand logos
+│   ├── logo-full.png           # Primary full logo with wordmark
+│   ├── logo-horizontal.png     # Horizontal brand badge
+│   ├── logo-icon.png           # Icon badge
+│   └── logo-symbol.png         # Standalone app symbol
 ├── src/
-│   ├── components/         # Modular React components
+│   ├── components/             # Modular React UI components
 │   │   ├── BottomCta.jsx       # Bottom call-to-action banner
-│   │   ├── CompareModal.jsx    # Side-by-side comparison modal table
-│   │   ├── CompareTray.jsx     # Floating bottom shortlist tray
-│   │   ├── DetailView.jsx      # In-depth mess profile page
-│   │   ├── Footer.jsx          # Footer with category quick links
-│   │   ├── Hero.jsx            # Hero search bar and quick stats
-│   │   ├── MessCard.jsx        # Grid card item with quick actions
-│   │   ├── Navbar.jsx          # Sticky frosted-glass navigation bar
-│   │   ├── ReviewModal.jsx     # OTP & PICT verified review submission modal
+│   │   ├── CompareModal.jsx    # 14-parameter side-by-side comparison modal table
+│   │   ├── CompareTray.jsx     # Floating bottom shortlist comparison tray
+│   │   ├── DetailView.jsx      # In-depth mess profile page (#mess-:id)
+│   │   ├── Footer.jsx          # Footer with category quick links & credits
+│   │   ├── Hero.jsx            # Hero search bar, dietary & cuisine filters
+│   │   ├── MessCard.jsx        # Directory card item with quick actions & specs
+│   │   ├── Navbar.jsx          # Sticky frosted-glass navigation bar with compare badge
+│   │   ├── ReviewModal.jsx     # Student review submission modal with PICT badge check
 │   │   ├── StarRating.jsx      # Reusable SVG star rating component
-│   │   ├── StudentVoices.jsx   # Automated reviews carousel
+│   │   ├── StudentVoices.jsx   # Automated touch-swipeable reviews carousel
 │   │   ├── Toast.jsx           # Toast notification system
-│   │   └── WhyChooseUs.jsx     # Key value propositions
+│   │   └── WhyChooseUs.jsx     # Key student-focused value propositions
 │   ├── data/
-│   │   ├── initialReviews.json # Pre-bundled initial student reviews
-│   │   └── messesData.json     # Curated 15-mess database with audited specs
+│   │   ├── initialReviews.json # Pre-bundled baseline student reviews
+│   │   └── messesData.json     # Curated 15-mess database with audited specs & coordinates
 │   ├── services/
-│   │   └── reviewsService.js   # Google Sheets & Google Apps Script API sync
+│   │   └── reviewsService.js   # Google Sheets & Google Apps Script API sync & transformation
 │   ├── utils/
-│   │   └── helpers.js          # Currency, distance, and storage helpers
-│   ├── App.jsx             # Main application orchestrator & routing
-│   ├── index.css           # Tailwind directives & global utility classes
-│   └── main.jsx            # React root entry point
-├── package.json            # Scripts & project dependencies
-├── tailwind.config.js      # Custom theme colors and font families
-└── vite.config.js          # Vite configuration
+│   │   └── helpers.js          # Currency, coordinate validation, walking routes & storage
+│   ├── App.jsx                 # Main application orchestrator, filter engine & hash router
+│   ├── index.css               # Tailwind CSS directives & custom styling
+│   └── main.jsx                # React root application entry point
+├── index.html                  # HTML5 entry page with viewport & SEO meta tags
+├── package.json                # Project dependencies and npm scripts
+├── postcss.config.js           # PostCSS configuration for Tailwind CSS & Autoprefixer
+├── tailwind.config.js          # Custom theme tokens, colors, and typography
+└── vite.config.js              # Vite build tool and development server configuration
 ```
 
 ---
@@ -129,7 +272,7 @@ MessMitra/
 
 ### Installation
 
-1. **Clone or open the repository:**
+1. **Clone or navigate into the repository:**
    ```bash
    cd MessMitra
    ```
